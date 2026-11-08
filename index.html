@@ -205,6 +205,11 @@ p{margin:0 0 14px;max-width:60ch}
 .steps code{background:var(--bg);padding:1px 6px;border-radius:6px;font-size:14px}
 .pasteCheck{margin:6px 0 0;font-size:15px;font-weight:600;color:var(--muted)}
 .pasteCheck.ok{color:var(--teal)} .pasteCheck.no{color:var(--coral)}
+.claudeRow{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:12px}
+.claudeRow .go{margin-top:0;font-size:18px;padding:8px 18px;text-decoration:none}
+#bHelpBtn{color:var(--violet);font-weight:700;margin:0;padding:8px 6px}
+.helpBox{background:var(--bg);border-radius:16px;padding:14px 16px;margin-top:14px;max-width:70ch}
+.helpBox .steps{margin-top:6px}
 .pubRow{display:flex;gap:10px;align-items:flex-start;margin:18px 0 0;font-size:16px;max-width:62ch}
 .pubRow input{width:22px;height:22px;margin-top:2px;flex:none}
 textarea{width:100%;font:inherit;font-size:17px;color:var(--ink);background:var(--bg);border:3px solid var(--line);border-radius:14px;padding:10px 12px;resize:vertical}
@@ -434,18 +439,28 @@ textarea:focus-visible{outline:none;border-color:var(--violet)}
         <button class="ghost" id="bAddRow" style="color:var(--violet);margin:6px 0 0;padding:6px 0">+ Add a question</button>
       </div>
       <div id="bClaude" class="hidden">
-        <ol class="steps">
-          <li><b>Type what you want to study.</b>
-            <input class="textIn" id="bTopic" maxlength="200" placeholder="e.g. preterite vs imperfect, Unit 3 vocab, the water cycle" style="width:min(460px,100%);display:block;margin-top:8px"></li>
-          <li><b>Copy this prompt.</b> It fills in your topic as you type.
-            <textarea id="bPrompt" rows="7" readonly aria-label="Prompt to copy into Claude"></textarea>
-            <button class="go" id="bCopy" style="font-size:18px;padding:8px 18px;margin-top:10px">📋 Copy prompt</button></li>
-          <li><b>Paste the prompt into Claude and send it.</b> <a href="https://claude.ai/new" target="_blank" rel="noopener">Open Claude in a new tab ↗</a></li>
-          <li><b>Copy Claude’s whole answer and paste it here.</b> It starts with <code>{"title":</code> and ends with <code>]}</code>. If Claude adds extra words before or after it, that’s fine. Paste everything.
-            <textarea id="bPaste" rows="6" placeholder="Paste Claude’s answer here" style="margin-top:8px"></textarea>
-            <p class="pasteCheck" id="bPasteCheck" role="status"></p></li>
-          <li><b>Press Save set</b> at the bottom.</li>
-        </ol>
+        <h3 style="margin-top:14px"><label for="bTopic">What do you want to study?</label></h3>
+        <input class="textIn" id="bTopic" maxlength="200" placeholder="e.g. preterite vs imperfect, Unit 3 vocab, the water cycle" style="width:min(460px,100%)">
+        <div class="claudeRow">
+          <button class="go" id="bCopy">📋 Copy prompt</button>
+          <a class="go" href="https://claude.ai/new" target="_blank" rel="noopener" style="background:var(--teal);box-shadow:0 5px 0 #0A6B60">Open Claude ↗</a>
+          <button class="ghost" id="bHelpBtn" aria-expanded="false" aria-controls="bHelp">❓ Need help?</button>
+        </div>
+        <div class="helpBox hidden" id="bHelp">
+          <h3 style="margin-top:0">How to make a set with Claude</h3>
+          <ol class="steps">
+            <li><b>Type what you want to study</b> in the box above, like “Unit 3 Spanish vocab.”</li>
+            <li><b>Press 📋 Copy prompt.</b> It copies this message, with your topic filled in:
+              <textarea id="bPrompt" rows="8" readonly aria-label="Prompt to copy into Claude"></textarea></li>
+            <li><b>Press Open Claude ↗.</b> Paste the prompt into Claude’s message box (Ctrl+V, or on a phone tap and hold, then Paste) and send it.</li>
+            <li><b>Copy Claude’s whole answer.</b> It looks like <code>{"title":"Unit 3 Vocab","questions":[ … ]}</code>. Use the copy button under Claude’s answer, or select all of it.</li>
+            <li><b>Paste it in the box below.</b> When you see the green ✓, press <b>Save set</b>.</li>
+          </ol>
+          <p class="muted" style="font-size:15px;margin:0">Tip: if Claude asks you a question instead of answering, reply “Just give me the JSON.”</p>
+        </div>
+        <h3><label for="bPaste">Paste Claude’s answer here</label></h3>
+        <textarea id="bPaste" rows="6" placeholder='It starts with {"title": and ends with ]}'></textarea>
+        <p class="pasteCheck" id="bPasteCheck" role="status"></p>
       </div>
       <label class="pubRow"><input type="checkbox" id="bPublic"> <span>Share publicly. Anyone on Study Quest can play it and will see it was made by <b id="bPubName"></b>. You can change this later.</span></label>
       <div style="display:flex;gap:12px;flex-wrap:wrap"><button class="go" id="bSave" style="background:var(--teal);box-shadow:0 5px 0 #0A6B60">Save set</button><button class="go" id="bCancel" style="background:#6E679E;box-shadow:0 5px 0 #4B4575">Cancel</button></div>
@@ -2594,7 +2609,7 @@ $("bCopy").onclick=async()=>{
   if(!$("bTopic").value.trim()){ bMsg("Type a topic in step 1 first."); $("bTopic").focus(); return; }
   bMsg("");
   try{ await navigator.clipboard.writeText($("bPrompt").value); $("bCopy").textContent="✓ Copied! Now paste it into Claude"; setTimeout(()=>{ $("bCopy").textContent="📋 Copy prompt"; },3000); }
-  catch(e){ $("bPrompt").focus(); $("bPrompt").select(); bMsg("The prompt is selected. Press Ctrl+C to copy it (on a phone, tap and hold, then Copy)."); }
+  catch(e){ showHelp(true); $("bPrompt").focus(); $("bPrompt").select(); bMsg("The prompt is selected. Press Ctrl+C to copy it (on a phone, tap and hold, then Copy)."); }
 };
 function checkPaste(){
   const raw=$("bPaste").value, el=$("bPasteCheck");
@@ -2607,6 +2622,12 @@ function checkPaste(){
   else { el.textContent="That doesn’t look like Claude’s full answer yet. Make sure you copied all of it, from { to the last }."; el.className="pasteCheck no"; }
 }
 $("bPaste").addEventListener("input", checkPaste);
+function showHelp(open){
+  $("bHelp").classList.toggle("hidden", !open);
+  $("bHelpBtn").setAttribute("aria-expanded", open ? "true" : "false");
+  $("bHelpBtn").textContent = open ? "Hide help" : "❓ Need help?";
+}
+$("bHelpBtn").onclick=()=>showHelp($("bHelp").classList.contains("hidden"));
 $("bCancel").onclick=()=>{ $("builderWrap").classList.add("hidden"); making=false; renderLibrary(); renderTopics(); };
 $("bSave").onclick=async()=>{
   let title=$("bTitle").value.trim().slice(0,80), qs=[];
