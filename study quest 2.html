@@ -1,0 +1,2618 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Study Quest</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#EEEBFF; --surface:#FFFFFF; --ink:#221C4A; --muted:#5E5890; --line:#D8D2FF;
+  --violet:#5B3FE6; --teal:#0C9384; --gold:#E09A00; --coral:#D9414D; --shadow:#C9C1FF;
+  color-scheme:light; box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#171436; --surface:#241F4F; --ink:#F1EEFF; --muted:#B3ACE6; --line:#3A3470;
+    --violet:#9A86FF; --teal:#33D6C4; --gold:#FFC53D; --coral:#FF7A84; --shadow:#0E0B26; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#171436; --surface:#241F4F; --ink:#F1EEFF; --muted:#B3ACE6; --line:#3A3470;
+  --violet:#9A86FF; --teal:#33D6C4; --gold:#FFC53D; --coral:#FF7A84; --shadow:#0E0B26; color-scheme:dark;
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font-family:"Baloo 2",ui-rounded,"Segoe UI",system-ui,-apple-system,sans-serif;font-size:18px;line-height:1.35}
+button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
+button:focus-visible{outline:3px solid var(--violet);outline-offset:3px}
+.wrap{max-width:900px;margin:0 auto;padding:16px}
+.hidden{display:none!important}
+
+.bar{display:grid;grid-template-columns:auto 1fr auto;gap:14px;align-items:center;background:var(--surface);
+  border-radius:20px;padding:12px 16px;box-shadow:0 5px 0 var(--shadow);margin-bottom:18px}
+.me{display:flex;align-items:center;gap:10px}
+.me .pet{font-size:40px;line-height:1}
+.me .pet img.av{width:46px;height:46px;border-radius:12px}
+img.av{display:inline-block;width:40px;height:40px;border-radius:10px;background:#fff;object-fit:contain;vertical-align:middle;image-rendering:auto}
+img.av.px{image-rendering:pixelated}
+.lane img.av{width:24px;height:24px;border-radius:6px}
+.targets img.av{width:44px;height:44px;margin-bottom:4px}
+.lobbyList img.av{width:30px;height:30px;margin-right:6px}
+.stand img.av{width:24px;height:24px;border-radius:6px;margin:0 4px}
+.podium img.av{width:72px;height:72px;border-radius:16px}
+.drawWrap{display:flex;gap:16px;flex-wrap:wrap;align-items:flex-start}
+#pad{width:200px;height:200px;background:#fff;border-radius:18px;border:3px solid var(--line);touch-action:none;cursor:crosshair}
+.drawTools{display:grid;gap:10px;flex:1 1 220px;align-content:start}
+.swatches{display:flex;gap:8px;flex-wrap:wrap}
+.swatches button{width:34px;height:34px;border-radius:50%;border:3px solid var(--line)}
+.swatches button[aria-pressed="true"]{border-color:var(--ink);transform:scale(1.15)}
+.me .gold{font-size:30px;font-weight:800;color:var(--gold);line-height:1}
+.me small{display:block;color:var(--muted);font-size:14px;font-weight:600}
+.me small.low{color:var(--coral)}
+.race{display:grid;gap:4px}
+.lane{display:grid;grid-template-columns:26px 1fr 60px;gap:8px;align-items:center;font-size:14px;font-weight:600}
+.track{height:10px;border-radius:6px;background:var(--line);overflow:hidden}
+.track i{display:block;height:100%;width:0;border-radius:6px;background:var(--muted);transition:width .5s ease}
+.lane.you .track i{background:var(--gold)}
+.lane span:last-child{text-align:right;color:var(--muted)}
+.lane.you span:last-child{color:var(--ink)}
+
+.card{background:var(--surface);border-radius:24px;padding:24px;box-shadow:0 6px 0 var(--shadow)}
+h1{font-size:clamp(40px,8vw,64px);line-height:1;margin:0 0 6px;font-weight:800;color:var(--violet)}
+h2{font-size:clamp(22px,4vw,30px);line-height:1.2;margin:0 0 14px;font-weight:700}
+h3{font-size:20px;margin:22px 0 8px;font-weight:700}
+p{margin:0 0 14px;max-width:60ch}
+.muted{color:var(--muted)}
+
+.pets{display:grid;grid-template-columns:repeat(auto-fit,minmax(72px,1fr));gap:10px;margin:0 0 6px}
+.pets button{font-size:40px;padding:8px 0;border-radius:18px;background:var(--bg);border:3px solid transparent}
+.pets button[aria-pressed="true"]{border-color:var(--violet);transform:translateY(-3px)}
+
+.seg{display:flex;flex-wrap:wrap;gap:8px}
+.seg button{padding:8px 16px;border-radius:14px;background:var(--bg);font-weight:700;border:3px solid transparent}
+.seg button[aria-pressed="true"]{border-color:var(--violet);color:var(--violet)}
+.seg.big button{padding:12px 18px;text-align:left;flex:1 1 220px}
+.seg.big small{display:block;font-weight:500;color:var(--muted);font-size:15px}
+
+.go{display:inline-block;background:var(--violet);color:#fff;font-weight:800;font-size:22px;padding:12px 30px;
+  border-radius:16px;box-shadow:0 5px 0 #3A27A8;margin-top:22px}
+.go:active{transform:translateY(3px);box-shadow:0 2px 0 #3A27A8}
+
+.qmeta{display:flex;justify-content:space-between;gap:10px;color:var(--muted);font-weight:600;font-size:15px;margin-bottom:8px}
+.answers{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:560px){.answers{grid-template-columns:1fr}}
+.answers button{min-height:84px;padding:14px 16px;border-radius:18px;font-size:20px;font-weight:700;text-align:left;color:#fff;transition:transform .08s}
+.answers button:active{transform:translateY(3px)}
+.answers button:nth-child(1){background:#E3A008;color:#2A1D00;box-shadow:0 5px 0 #A87500}
+.answers button:nth-child(2){background:#4C6FFF;box-shadow:0 5px 0 #2E48C2}
+.answers button:nth-child(3){background:#12A38F;box-shadow:0 5px 0 #0A7465}
+.answers button:nth-child(4){background:#E14B5A;box-shadow:0 5px 0 #A52C39}
+.answers.locked button{pointer-events:none}
+.answers.locked button.dim{opacity:.3}
+
+.verdict{font-size:clamp(34px,7vw,52px);font-weight:800;line-height:1;margin-bottom:10px}
+.verdict.good{color:var(--teal)} .verdict.bad{color:var(--coral)}
+.fix{background:var(--bg);border-radius:16px;padding:14px 16px;margin:12px 0 0}
+.fix b{color:var(--teal)}
+
+.flasks{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:8px}
+.flask{border-radius:20px;padding:12px 6px 14px;background:var(--surface);display:grid;justify-items:center;gap:6px;transition:transform .15s}
+.flask:hover{transform:translateY(-4px)}
+.flask svg{width:min(110px,100%);height:auto}
+.flask .out{min-height:58px;text-align:center;font-weight:800;font-size:22px;line-height:1.1}
+.flask .out small{display:block;font-size:14px;font-weight:600;color:var(--muted)}
+.flask.opened{animation:pop .35s ease}
+.flask.other{opacity:.45}
+.flasks.locked .flask{pointer-events:none}
+.out.good{color:var(--teal)} .out.bad{color:var(--coral)} .out.big{color:var(--gold)}
+@keyframes pop{0%{transform:scale(.9)}60%{transform:scale(1.08)}100%{transform:scale(1)}}
+@keyframes bubble{0%{transform:translateY(0);opacity:.8}100%{transform:translateY(-30px);opacity:0}}
+.flask svg .b{animation:bubble 1.8s infinite}
+.flask svg .b2{animation-delay:.6s}.flask svg .b3{animation-delay:1.2s}
+
+.chooser{margin-top:18px;background:var(--bg);border-radius:18px;padding:16px}
+.chooser h3{margin-top:0}
+.targets{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.targets button{background:var(--surface);border-radius:16px;padding:12px;text-align:left;border:3px solid var(--line);font-weight:700}
+.targets button:hover{border-color:var(--violet)}
+.targets .em{font-size:30px;line-height:1;display:block}
+.targets small{display:block;color:var(--muted);font-weight:600}
+.targets b{color:var(--gold)}
+
+.podium{font-size:56px;line-height:1;margin-bottom:8px}
+.stats{display:flex;gap:28px;flex-wrap:wrap;margin:12px 0 10px}
+.stats div{font-size:15px;color:var(--muted);font-weight:600}
+.stats b{display:block;font-size:34px;color:var(--ink);line-height:1}
+.topics{display:grid;gap:8px;margin-bottom:6px}
+.topic{display:grid;grid-template-columns:minmax(120px,190px) 1fr 70px;gap:10px;align-items:center;font-weight:600;font-size:16px}
+.topic .track{height:14px}
+.topic .track i{background:var(--teal)}
+.topic.weak .track i{background:var(--coral)}
+.topic span:last-child{text-align:right;color:var(--muted)}
+@media (max-width:480px){.topic{grid-template-columns:1fr 70px}.topic .track{grid-column:1/-1;grid-row:2}}
+.missed{display:grid;gap:10px;margin:8px 0 0}
+.missed div{background:var(--bg);border-radius:14px;padding:12px 14px}
+.missed b{color:var(--teal)}
+
+.quit{font-weight:700;color:var(--muted);padding:6px 12px;border-radius:12px;background:var(--bg);align-self:start;font-size:15px}
+.overlay{position:fixed;inset:0;background:rgba(15,10,40,.6);display:grid;place-items:center;padding:16px;z-index:20}
+.overlay .card{max-width:540px;width:100%}
+.customNum{display:flex;align-items:center;gap:10px;margin-top:10px;font-weight:700}
+.customNum input{width:150px;font:inherit;font-size:20px;color:var(--ink);background:var(--bg);border:3px solid var(--line);border-radius:14px;padding:6px 12px}
+.customNum input:focus-visible{outline:none;border-color:var(--violet)}
+.explain p{margin:0 0 8px;max-width:none}
+.explain p:last-child{margin-bottom:0}
+.explain p.you{font-weight:700;color:var(--muted);margin-top:12px}
+.followRow{display:flex;gap:10px;margin-top:10px;flex-wrap:wrap;align-items:center;max-width:70ch}
+.followRow .textIn{flex:1 1 220px;width:auto;font-size:17px;font-weight:600}
+.followRow .go{margin-top:0;padding:8px 22px;font-size:18px}
+.go:disabled{opacity:.5}
+.overlay .card{max-height:92vh;overflow:auto}
+.chart svg{width:100%;height:auto;display:block}
+.chart text{fill:var(--muted);font-size:12px;font-family:inherit;font-weight:600}
+.legend{display:flex;gap:16px;font-size:14px;color:var(--muted);font-weight:600;margin-top:6px;flex-wrap:wrap}
+.legend i{display:inline-block;width:16px;height:4px;border-radius:2px;margin-right:6px;vertical-align:middle}
+.stand{display:grid;gap:6px}
+.stand div{display:flex;justify-content:space-between;gap:10px;background:var(--bg);border-radius:12px;padding:6px 12px;font-weight:700}
+.stand div.you{outline:3px solid var(--gold);outline-offset:-3px}
+.hintRow{margin-top:16px}
+#hintBtn{font-weight:700;color:var(--gold);padding:8px 16px;border-radius:12px;background:var(--bg);font-size:17px}
+#hintBtn:disabled{opacity:.6}
+.hintText{background:var(--bg);border-left:5px solid var(--gold);border-radius:14px;padding:10px 14px;margin:10px 0 0;max-width:70ch}
+.answers button.gone{opacity:.25;pointer-events:none}
+.wrongPanel{margin-top:22px;padding-top:18px;border-top:3px solid var(--line)}
+.answers.locked button.right{opacity:1;outline:4px solid var(--teal);outline-offset:3px}
+.answers.locked button.right::before{content:"✓ "}
+.answers.locked button.picked::before{content:"✗ "}
+.explain{background:var(--bg);border-radius:16px;padding:14px 16px;margin-top:14px;border-left:5px solid var(--teal);max-width:70ch}
+.textIn{font:inherit;font-size:20px;font-weight:700;color:var(--ink);background:var(--bg);border:3px solid var(--line);border-radius:14px;padding:8px 12px;width:min(320px,100%)}
+.textIn:focus-visible{outline:none;border-color:var(--violet)}
+.textIn.code{letter-spacing:.25em;text-transform:uppercase;width:220px}
+.codeBig{font-size:clamp(52px,13vw,88px);font-weight:800;letter-spacing:.15em;color:var(--violet);line-height:1}
+.lobbyList{display:flex;flex-wrap:wrap;gap:10px}
+.lobbyList div{background:var(--bg);border-radius:14px;padding:8px 14px;font-weight:700}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:14px;font-weight:700;z-index:30;max-width:90%;text-align:center}
+.lib{display:grid;gap:10px}
+.libItem{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;background:var(--bg);border-radius:18px;padding:6px 10px 6px 6px;border:3px solid transparent}
+.libItem.sel{border-color:var(--violet)}
+.libPick{display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:center;text-align:left;padding:8px;border-radius:14px;width:100%}
+.libPick .ic{font-size:30px;line-height:1}
+.libPick b{display:block;font-size:19px;line-height:1.2}
+.libPick small{color:var(--muted);font-weight:600;font-size:14px}
+.libActs{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.libActs button{font-size:14px;font-weight:700;color:var(--muted);padding:4px 10px;border-radius:10px;background:var(--surface)}
+.libActs button.danger{color:var(--coral)}
+.libItem.editing{padding:10px}
+.libItem input{font:inherit;font-weight:700;font-size:18px;width:100%;color:var(--ink);background:var(--surface);border:3px solid var(--line);border-radius:12px;padding:6px 10px}
+.libItem input:focus-visible{outline:none;border-color:var(--violet)}
+.libHead{font-weight:700;color:var(--muted);font-size:14px;letter-spacing:.06em;text-transform:uppercase;margin:12px 0 0}
+.libActs button.pub{color:var(--teal)}
+.bRow{display:grid;grid-template-columns:1fr 1fr;gap:8px;background:var(--bg);border-radius:14px;padding:10px;margin-bottom:8px}
+.bRow input{font:inherit;font-size:16px;color:var(--ink);background:var(--surface);border:2px solid var(--line);border-radius:10px;padding:6px 10px;min-width:0}
+.bRow input.q{grid-column:1/-1}
+.bRow input.ok{border-color:var(--teal)}
+.bRow .del{grid-column:1/-1;justify-self:end;font-size:14px;font-weight:700;color:var(--coral)}
+.pubRow{display:flex;gap:10px;align-items:flex-start;margin:18px 0 0;font-size:16px;max-width:62ch}
+.pubRow input{width:22px;height:22px;margin-top:2px;flex:none}
+textarea{width:100%;font:inherit;font-size:17px;color:var(--ink);background:var(--bg);border:3px solid var(--line);border-radius:14px;padding:10px 12px;resize:vertical}
+textarea:focus-visible{outline:none;border-color:var(--violet)}
+.ghost{margin-left:12px;font-weight:700;color:var(--coral);padding:8px 14px}
+.go:disabled{opacity:.5;cursor:default}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* ---- ¡Vamos! Quiz Show (embedded) ---- */
+#vamosApp{
+  --bg:#FFF6E9; --surface:#FFFFFF; --ink:#2B1B3D; --muted:#6B5A7E; --line:#EADFD0; --shadow:#E9D8C2;
+  --stage:#3B1F5C; --spot:#FFD166;
+  --fut:#C98A00; --cmd:#3F5FE0; --plc:#0E9180; --dir:#D63A4E; --map:#7C4DDB;
+  --good:#0E9180; --bad:#D63A4E; --street:#D9D2C7; --block:#F3EADF;
+  color-scheme:light; box-sizing:border-box;
+  
+}
+@media (prefers-color-scheme:dark){
+:root:not([data-theme="light"]) #vamosApp{
+    --bg:#1A1226; --surface:#271B38; --ink:#F6EEFF; --muted:#BBA9D2; --line:#3D2D55; --shadow:#0F0A17;
+    --stage:#120B1C; --spot:#FFD166;
+    --fut:#FFC53D; --cmd:#8FA4FF; --plc:#35D2BD; --dir:#FF7A8A; --map:#B59BFF;
+    --good:#35D2BD; --bad:#FF7A8A; --street:#4A3E5C; --block:#33264A; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"] #vamosApp{
+  --bg:#1A1226; --surface:#271B38; --ink:#F6EEFF; --muted:#BBA9D2; --line:#3D2D55; --shadow:#0F0A17;
+  --stage:#120B1C; --spot:#FFD166;
+  --fut:#FFC53D; --cmd:#8FA4FF; --plc:#35D2BD; --dir:#FF7A8A; --map:#B59BFF;
+  --good:#35D2BD; --bad:#FF7A8A; --street:#4A3E5C; --block:#33264A; color-scheme:dark;
+}
+#vamosApp *,#vamosApp *::before,#vamosApp *::after{box-sizing:border-box}
+#vamosApp{margin:0;background:var(--bg);color:var(--ink);font-family:"Fredoka",ui-rounded,"Segoe UI",system-ui,-apple-system,sans-serif;font-size:18px;line-height:1.4}
+#vamosApp button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
+#vamosApp button:focus-visible,#vamosApp [tabindex]:focus-visible{outline:3px solid var(--map);outline-offset:3px}
+#vamosApp .wrap{max-width:820px;margin:0 auto;padding:16px}
+#vamosApp .hidden{display:none!important}
+#vamosApp .marquee{background:var(--stage);color:#fff;border-radius:22px;padding:18px 20px;margin-bottom:16px;position:relative;overflow:hidden}
+#vamosApp .marquee::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 15% 0%,rgba(255,209,102,.35),transparent 45%),radial-gradient(circle at 85% 0%,rgba(143,164,255,.3),transparent 45%);pointer-events:none}
+#vamosApp .marquee h1{position:relative;margin:0;font-size:clamp(34px,7vw,54px);line-height:1;font-weight:700;color:var(--spot);letter-spacing:.01em}
+#vamosApp .marquee p{position:relative;margin:6px 0 0;color:#E9DDFB;font-size:17px}
+#vamosApp .bulbs{position:relative;display:flex;gap:10px;margin-top:12px}
+#vamosApp .bulbs i{width:10px;height:10px;border-radius:50%;background:var(--spot);opacity:.35;animation:vblink 1.6s infinite}
+#vamosApp .bulbs i:nth-child(2n){animation-delay:.8s}
+@keyframes vblink{50%{opacity:1}}
+#vamosApp .score{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+#vamosApp .score div{background:var(--surface);border-radius:14px;padding:8px 14px;box-shadow:0 4px 0 var(--shadow);font-weight:600;font-size:16px}
+#vamosApp .score b{font-size:20px}
+#vamosApp .card{background:var(--surface);border-radius:22px;padding:22px;box-shadow:0 6px 0 var(--shadow)}
+#vamosApp h2{font-size:clamp(22px,4vw,28px);margin:0 0 10px;line-height:1.25;font-weight:600}
+#vamosApp h3{font-size:19px;margin:20px 0 8px;font-weight:600}
+#vamosApp p{margin:0 0 12px;max-width:62ch}
+#vamosApp .muted{color:var(--muted)}
+#vamosApp .badge{display:inline-block;font-weight:700;font-size:14px;letter-spacing:.04em;text-transform:uppercase;padding:4px 10px;border-radius:999px;color:#fff;margin-bottom:10px}
+#vamosApp .b-future{background:var(--fut);color:#241500}
+#vamosApp .b-command{background:var(--cmd)}
+#vamosApp .b-place{background:var(--plc)}
+#vamosApp .b-dir{background:var(--dir)}
+#vamosApp .b-map{background:var(--map)}
+#vamosApp .qnum{float:right;color:var(--muted);font-weight:600;font-size:15px}
+#vamosApp .similar{display:inline-block;margin-left:8px;font-size:14px;font-weight:600;color:var(--muted)}
+#vamosApp .prompt{font-size:clamp(22px,4.6vw,30px);font-weight:600;margin:4px 0 6px;line-height:1.3}
+#vamosApp .prompt .blank{display:inline-block;min-width:3.5em;border-bottom:3px solid currentColor;margin:0 4px}
+#vamosApp .prompt .verb{color:var(--muted);font-weight:500}
+#vamosApp .sub{color:var(--muted);font-size:16px;margin-bottom:14px}
+#vamosApp .tip{background:var(--bg);border-radius:12px;padding:8px 12px;font-size:15px;color:var(--muted);margin:10px 0 0;max-width:62ch}
+#vamosApp .answerRow{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+#vamosApp .answerRow input{flex:1 1 220px;font:inherit;font-size:22px;font-weight:600;color:var(--ink);background:var(--bg);border:3px solid var(--line);border-radius:14px;padding:10px 14px;min-width:0}
+#vamosApp .answerRow input:focus-visible{outline:none;border-color:var(--map)}
+#vamosApp .answerRow input.ok{border-color:var(--good)}
+#vamosApp .answerRow input.no{border-color:var(--bad)}
+#vamosApp .accents{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+#vamosApp .accents button{min-width:42px;padding:6px 10px;border-radius:10px;background:var(--bg);font-weight:600;font-size:20px;border:2px solid var(--line)}
+#vamosApp .btn{display:inline-block;background:var(--map);color:#fff;font-weight:700;font-size:20px;padding:10px 24px;border-radius:14px;box-shadow:0 5px 0 #4E2D9E}
+#vamosApp .btn:active{transform:translateY(3px);box-shadow:0 2px 0 #4E2D9E}
+#vamosApp .btn.alt{background:var(--plc);box-shadow:0 5px 0 #08665A}
+#vamosApp .btn.gray{background:#77698C;box-shadow:0 5px 0 #4F4462}
+#vamosApp .btn:disabled{opacity:.5}
+#vamosApp .btnRow{display:flex;gap:12px;flex-wrap:wrap;margin-top:18px}
+#vamosApp .feedback{margin-top:16px;border-radius:16px;padding:14px 16px;background:var(--bg);border-left:6px solid var(--good)}
+#vamosApp .feedback.no{border-left-color:var(--bad)}
+#vamosApp .feedback.close{border-left-color:var(--fut)}
+#vamosApp .feedback .v{font-size:24px;font-weight:700;margin-bottom:4px}
+#vamosApp .feedback.ok .v{color:var(--good)}
+#vamosApp .feedback.no .v{color:var(--bad)}
+#vamosApp .feedback.close .v{color:var(--fut)}
+#vamosApp .feedback p{margin:0 0 4px}
+#vamosApp .map{margin-top:6px}
+#vamosApp .map .decor rect{fill:var(--block);opacity:.55}
+#vamosApp .map .decor text{font-size:22px;opacity:.6}
+#vamosApp .map.big svg{max-width:680px}
+#vamosApp .map.huge{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:14px}
+#vamosApp .map.huge svg{max-width:none}
+#vamosApp .map.big .bld text{font-size:12px}
+#vamosApp .map.big .bld text.ic{font-size:24px}
+#vamosApp .map svg{width:100%;max-width:560px;height:auto;display:block;margin:0 auto}
+#vamosApp .map .street{fill:var(--street)}
+#vamosApp .map .dash{stroke:var(--surface);stroke-width:3;stroke-dasharray:10 10;opacity:.8}
+#vamosApp .map .bld rect{fill:var(--block);stroke:var(--line);stroke-width:3;transition:fill .15s}
+#vamosApp .map .bld text{fill:var(--ink);font-family:inherit;font-weight:600;font-size:13px}
+#vamosApp .map .bld text.ic{font-size:26px}
+#vamosApp .map .bld{cursor:pointer}
+#vamosApp .map .bld:hover rect,#vamosApp .map .bld:focus-visible rect{stroke:var(--map)}
+#vamosApp .map .bld.right rect{fill:var(--good);stroke:var(--good)}
+#vamosApp .map .bld.right text{fill:#fff}
+#vamosApp .map .bld.wrong rect{fill:var(--bad);stroke:var(--bad)}
+#vamosApp .map .bld.wrong text{fill:#fff}
+#vamosApp .map.locked .bld{pointer-events:none}
+#vamosApp .map .route{fill:none;stroke:var(--map);stroke-width:6;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:2 12}
+#vamosApp .map .you{fill:var(--spot);stroke:var(--stage);stroke-width:2}
+#vamosApp .dirs{font-size:clamp(19px,4vw,24px);font-weight:600;line-height:1.45;background:var(--bg);border-radius:14px;padding:12px 16px;margin:6px 0 10px}
+#vamosApp .topics{display:grid;gap:8px}
+#vamosApp .topic{display:grid;grid-template-columns:minmax(130px,200px) 1fr 64px;gap:10px;align-items:center;font-weight:600;font-size:16px}
+#vamosApp .track{height:14px;border-radius:7px;background:var(--line);overflow:hidden}
+#vamosApp .track i{display:block;height:100%;border-radius:7px}
+#vamosApp .topic span:last-child{text-align:right;color:var(--muted)}
+@media (max-width:480px){
+#vamosApp .topic{grid-template-columns:1fr 64px}
+#vamosApp .topic .track{grid-column:1/-1;grid-row:2}
+}
+#vamosApp .big{font-size:clamp(44px,10vw,70px);font-weight:700;line-height:1;color:var(--map)}
+#vamosApp .howto{display:grid;gap:8px;margin:14px 0 4px}
+#vamosApp .howto div{background:var(--bg);border-radius:12px;padding:8px 12px;font-size:16px}
+#vamosApp .howto b{font-weight:600}
+@media (prefers-reduced-motion:reduce){
+#vamosApp *{animation:none!important;transition:none!important}
+}
+#vamosApp{font-family:"Fredoka",ui-rounded,"Segoe UI",system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--ink);border-radius:24px;padding:4px 0;line-height:1.4}
+#vamosApp .backBtn{position:relative;margin-top:12px;background:rgba(255,255,255,.15);color:#fff;font-weight:600;padding:6px 14px;border-radius:12px;font-size:16px}
+
+</style>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🗺️</text></svg>">
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="bar hidden" id="bar">
+    <div class="me"><span class="pet" id="mePet"></span><div><span class="gold" id="meGold">0</span><small id="meGoal"></small></div></div>
+    <div class="race" id="race"></div>
+    <button class="quit" id="quitBtn">✕ Quit</button>
+  </div>
+
+  <section class="card" id="sAuth">
+    <h1>Study Quest</h1>
+    <p class="muted">Sign in so the sets you make are saved to your own account.</p>
+    <div class="seg" id="authSeg" style="margin-top:14px"><button data-m="in" aria-pressed="true">Sign in</button><button data-m="up" aria-pressed="false">Create account</button></div>
+    <div id="authNameWrap" class="hidden"><h3><label for="authName">Your name</label></h3><input class="textIn" id="authName" maxlength="20" autocomplete="nickname" placeholder="Shown on games you share"></div>
+    <h3><label for="authEmail">Email</label></h3><input class="textIn" id="authEmail" type="email" autocomplete="email" style="width:min(420px,100%)">
+    <h3><label for="authPass">Password</label></h3><input class="textIn" id="authPass" type="password" autocomplete="current-password" style="width:min(420px,100%)">
+    <p class="muted" style="font-size:15px;margin-top:10px">Any email works, including school emails, and you won’t need to check your inbox. Make up a new password just for Study Quest (at least 6 characters). Don’t reuse your school password.</p>
+    <div style="display:flex;flex-wrap:wrap;gap:12px;align-items:center"><button class="go" id="authBtn">Sign in</button><button class="ghost" id="forgotBtn" style="color:var(--violet);margin-top:22px">Forgot password?</button></div>
+    <p class="muted" id="authMsg" role="status" style="margin-top:12px"></p>
+  </section>
+
+  <section class="card hidden" id="sStart">
+    <h1>Study Quest</h1>
+    <p class="muted" style="font-size:15px;display:flex;gap:10px;align-items:center;flex-wrap:wrap"><span id="whoLine"></span><button class="ghost" id="signOutBtn" style="color:var(--violet);margin:0;padding:2px 8px">Sign out</button></p>
+    <p class="muted">Your library of review games: Spanish, chemistry, and every set you make.</p>
+    <p>Answer right to open a mystery box. Boxes hold gold, doubles, spills, or a chance to steal from or swap with the player you pick. Questions you miss come back a few turns later so you can try them again.</p>
+
+    <h3>Draw your player</h3>
+    <div class="drawWrap">
+      <canvas id="pad" width="240" height="240" aria-label="Drawing pad for your player"></canvas>
+      <div class="drawTools">
+        <div class="swatches" id="swatches" aria-label="Colors"></div>
+        <div class="seg" id="sizeSeg"><button data-s="6" aria-pressed="false">Thin</button><button data-s="12" aria-pressed="true">Medium</button><button data-s="24" aria-pressed="false">Thick</button></div>
+        <div class="seg"><button id="eraseBtn" aria-pressed="false">Eraser</button><button id="undoBtn">Undo</button><button id="clearBtn">Clear</button></div>
+        <p class="muted" style="font-size:15px;margin:0">Your drawing shows up next to your gold and in friend games. It’s saved for next time.</p>
+      </div>
+    </div>
+
+    <h3>How do you want to play?</h3>
+    <div class="seg big" id="playSeg">
+      <button data-play="solo" aria-pressed="true">Just me<small>Play on this device, with as many bots as you want</small></button>
+      <button data-play="host" aria-pressed="false">Host a game<small>Get a code your friends type to join</small></button>
+      <button data-play="join" aria-pressed="false">Join with a code<small>Type the code a friend gives you</small></button>
+    </div>
+    <div id="nickWrap" class="hidden"><h3><label for="nickIn">Your name in the game</label></h3><input class="textIn" id="nickIn" maxlength="16" autocomplete="off" placeholder="e.g. Alex"></div>
+    <div id="codeWrap" class="hidden"><h3><label for="codeIn">Game code</label></h3><input class="textIn code" id="codeIn" maxlength="5" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="ABCDE"></div>
+
+    <div id="setupWrap">
+    <div id="botWrap"><h3>Bots</h3><div class="seg" id="botSeg"></div>
+      <div class="customNum hidden" id="botCustom"><label for="botIn" class="muted">Play against</label><input id="botIn" type="number" inputmode="numeric" min="0" max="20" step="1" value="8"><span>bots</span></div>
+      <h3 style="margin-top:14px">Bot level</h3><div class="seg" id="botLvSeg"></div>
+      <p class="muted" id="botLvNote" style="font-size:15px;margin:8px 0 0"></p></div>
+
+    <h3 id="modeHead">Game mode</h3>
+    <div class="seg big" id="modeSeg">
+      <button data-mode="race" aria-pressed="true">Race to a goal<small>First to the gold target wins</small></button>
+      <button data-mode="time" aria-pressed="false">Beat the clock<small>Most gold when time runs out wins</small></button>
+    </div>
+
+    <div id="goalWrap"><h3>Gold target</h3><div class="seg" id="goalSeg"></div>
+      <div class="customNum hidden" id="goalCustom"><label for="goalIn" class="muted">Target</label><input id="goalIn" type="number" inputmode="numeric" min="100" max="100000" step="50" value="1500"><span>gold</span></div></div>
+    <div id="timeWrap" class="hidden"><h3>Time limit</h3><div class="seg" id="timeSeg"></div>
+      <div class="customNum hidden" id="timeCustom"><label for="timeIn" class="muted">Time</label><input id="timeIn" type="number" inputmode="decimal" min="1" max="60" step="1" value="7"><span>minutes</span></div></div>
+
+    <h3>Question library</h3>
+    <div class="lib" id="libList"></div>
+    <p class="muted" id="libMsg" role="status" style="margin:8px 0 0;font-size:15px"></p>
+    <div id="topicWrap"><h3 id="topicHead">Topics to practice</h3><div class="seg" id="topicSeg"></div></div>
+    <div id="customWrap" class="hidden">
+      <h3><label for="topicIn">What do you want to study?</label></h3>
+      <p class="muted" style="font-size:15px;margin-bottom:8px">New sets are saved to your library automatically.</p>
+      <textarea id="topicIn" rows="3" placeholder="e.g. preterite vs imperfect, food vocabulary, or paste your vocab list"></textarea>
+      <div class="seg" id="countSeg" style="margin-top:10px"></div>
+      <div class="customNum hidden" id="countCustom"><label for="countIn" class="muted">Make</label><input id="countIn" type="number" inputmode="numeric" min="3" max="40" step="1" value="25"><span>questions</span></div>
+      <div><button class="go" id="makeBtn" style="background:var(--teal);box-shadow:0 5px 0 #0A6B60">Make my questions</button><button class="ghost hidden" id="stopBtn">Stop</button></div>
+      <p class="muted" id="makeStatus" role="status" style="margin:12px 0 0"></p>
+    </div>
+    <div id="builderWrap" class="hidden">
+      <h3><label for="bTitle">Set name</label></h3>
+      <input class="textIn" id="bTitle" maxlength="80" placeholder="e.g. Unit 4 vocab" style="width:min(420px,100%)">
+      <h3>How do you want to make it?</h3>
+      <div class="seg" id="bModeSeg"><button data-b="list" aria-pressed="true">From a word list</button><button data-b="type" aria-pressed="false">Type my own questions</button><button data-b="claude" aria-pressed="false">Paste from Claude</button></div>
+      <div id="bList">
+        <p class="muted" style="font-size:15px;margin:12px 0 6px">One per line: <b>word = meaning</b>. You can also copy and paste straight from Quizlet. You need at least 4 lines.</p>
+        <textarea id="bListIn" rows="8" placeholder="la panadería = bakery&#10;la farmacia = pharmacy&#10;el banco = bank&#10;la biblioteca = library"></textarea>
+        <div class="seg" id="bDirSeg" style="margin-top:10px"><button data-d="fwd" aria-pressed="true">Show word, pick meaning</button><button data-d="back" aria-pressed="false">Show meaning, pick word</button><button data-d="both" aria-pressed="false">Both</button></div>
+      </div>
+      <div id="bType" class="hidden">
+        <p class="muted" style="font-size:15px;margin:12px 0 6px">Type each question and its right answer. Wrong answers are optional: blanks get filled with right answers from your other questions.</p>
+        <div id="bRows"></div>
+        <button class="ghost" id="bAddRow" style="color:var(--violet);margin:6px 0 0;padding:6px 0">+ Add a question</button>
+      </div>
+      <div id="bClaude" class="hidden">
+        <p class="muted" style="font-size:15px;margin:12px 0 6px">1. Type a topic and copy the prompt. 2. Paste it into Claude. 3. Copy Claude’s whole answer and paste it in the box below.</p>
+        <input class="textIn" id="bTopic" maxlength="200" placeholder="e.g. preterite vs imperfect" style="width:min(420px,100%)">
+        <div><button class="go" id="bCopy" style="font-size:18px;padding:8px 18px;margin-top:12px">Copy prompt for Claude</button></div>
+        <textarea id="bPaste" rows="6" placeholder="Paste Claude’s answer here" style="margin-top:12px"></textarea>
+      </div>
+      <label class="pubRow"><input type="checkbox" id="bPublic"> <span>Share publicly. Anyone on Study Quest can play it and will see it was made by <b id="bPubName"></b>. You can change this later.</span></label>
+      <div style="display:flex;gap:12px;flex-wrap:wrap"><button class="go" id="bSave" style="background:var(--teal);box-shadow:0 5px 0 #0A6B60">Save set</button><button class="go" id="bCancel" style="background:#6E679E;box-shadow:0 5px 0 #4B4575">Cancel</button></div>
+      <p class="muted" id="bMsg" role="status" style="margin-top:10px"></p>
+    </div>
+    </div>
+
+    <div style="display:flex;flex-wrap:wrap;gap:12px">
+      <button class="go" id="startBtn">Start game</button>
+    </div>
+    <p class="muted" id="startMsg" role="status" style="margin:10px 0 0"></p>
+  </section>
+
+  <div id="vamosApp" class="hidden">
+  <div class="marquee">
+    <h1>¡Vamos! Quiz Show</h1>
+    <p>Future tense · tú commands · places · directions</p>
+    <button class="backBtn" id="v_back">← Back to Study Quest</button>
+    <div class="bulbs" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+  </div>
+
+  <!-- start -->
+  <section class="card" id="v_sStart">
+    <h2>Welcome, contestant!</h2>
+    <p>Each round has 15 questions from all four topics, mixed together. Type your answer and press Enter. Miss one and you get a quick explanation plus a similar question to try.</p>
+    <div class="howto">
+      <div><b style="color:var(--fut)">Future tense:</b> type the verb, like <i>estudiaré</i>. Don’t forget accents!</div>
+      <div><b style="color:var(--cmd)">Tú commands:</b> type the command, like <i>mira</i> or <i>escribe</i>.</div>
+      <div><b style="color:var(--plc)">Places:</b> type the English for the Spanish place.</div>
+      <div><b style="color:var(--dir)">Directions:</b> type the English for the Spanish directions.</div>
+      <div><b style="color:var(--map)">Map challenge:</b> follow Spanish directions and tap the place you end up at. Map levels go <b>Easy → Hard → Expert → Impossible</b>: bigger cities and more turns each time.</div>
+    </div>
+    <div class="btnRow">
+      <button class="btn" id="v_startBtn">Start the show</button>
+      <button class="btn alt" id="v_mapBtn">Easy map</button>
+      <button class="btn" id="v_bigMapBtn" style="background:#E3A008;color:#241500;box-shadow:0 5px 0 #8A5F00">Hard map</button>
+      <button class="btn" id="v_expertBtn" style="background:#D63A4E;box-shadow:0 5px 0 #8E1F30">Expert map</button>
+      <button class="btn" id="v_impBtn" style="background:#1F1A2E;box-shadow:0 5px 0 #000">Impossible map 💀</button>
+    </div>
+  </section>
+
+  <!-- game -->
+  <div id="v_sGame" class="hidden">
+    <div class="score">
+      <div>⭐ <b id="v_scPts">0</b> pts</div>
+      <div>✅ <b id="v_scRight">0</b>/<span id="v_scTotal">0</span></div>
+      <div>🔥 <b id="v_scStreak">0</b> streak</div>
+    </div>
+    <section class="card" id="v_qCard">
+      <span class="qnum" id="v_qNum"></span>
+      <span class="badge" id="v_qBadge"></span><span class="similar hidden" id="v_qSimilar">Try a similar one</span>
+      <div id="v_qBody"></div>
+      <div id="v_qInputArea">
+        <div class="answerRow">
+          <input id="v_ans" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Your answer">
+          <button class="btn" id="v_checkBtn">Check</button>
+        </div>
+        <div class="accents" id="v_accents" aria-label="Accent letters">
+          <button data-c="á">á</button><button data-c="é">é</button><button data-c="í">í</button><button data-c="ó">ó</button><button data-c="ú">ú</button><button data-c="ñ">ñ</button>
+        </div>
+      </div>
+      <div class="feedback hidden" id="v_fb" role="status"></div>
+      <div class="btnRow hidden" id="v_nextRow"><button class="btn" id="v_nextBtn">Next question</button></div>
+    </section>
+  </div>
+
+  <!-- end -->
+  <section class="card hidden" id="v_sEnd">
+    <p class="muted" style="margin-bottom:4px">Final score</p>
+    <div class="big" id="v_eScore"></div>
+    <p id="v_eLine" style="margin-top:10px"></p>
+    <h3>By topic</h3>
+    <div class="topics" id="v_eTopics"></div>
+    <div class="btnRow">
+      <button class="btn" id="v_againBtn">Play again</button>
+      <button class="btn alt" id="v_mapAgainBtn">Map level</button>
+      <button class="btn gray" id="v_homeBtn">Home</button>
+    </div>
+  </section>
+  </div>
+
+  <section class="card hidden" id="sLobby">
+    <p class="muted" id="lbRole" style="margin-bottom:4px"></p>
+    <div class="codeBig" id="lbCode"></div>
+    <p class="muted" id="lbInfo" style="margin-top:8px"></p>
+    <h3>Players</h3>
+    <div class="lobbyList" id="lbPlayers"></div>
+    <p class="muted" id="lbMsg" role="status" style="margin-top:14px"></p>
+    <div style="display:flex;flex-wrap:wrap;gap:12px">
+      <button class="go" id="lbStart">Start game</button>
+      <button class="go" id="lbLeave" style="background:#6E679E;box-shadow:0 5px 0 #4B4575">Leave</button>
+    </div>
+  </section>
+
+  <section class="card hidden" id="sQ">
+    <div class="qmeta"><span id="qNum"></span><span id="qTopic"></span><span id="qStreak"></span></div>
+    <h2 id="qText"></h2>
+    <div class="answers" id="answers"></div>
+    <div class="hintRow" id="hintRow">
+      <button id="hintBtn">💡 Hint</button>
+      <p class="hintText hidden" id="hintText" aria-live="polite"></p>
+    </div>
+    <div class="wrongPanel hidden" id="wrongPanel">
+    <div class="verdict bad" style="font-size:clamp(28px,5vw,38px)">Not quite</div>
+    <div class="fix"><p style="margin-bottom:6px">Correct answer: <b id="wAns"></b></p><p class="muted" id="wWhy" style="margin:0"></p></div>
+    <p class="muted" style="margin:12px 0 0;font-size:15px">This one will come back in a few questions.</p>
+    <div class="explain hidden" id="exText" aria-live="polite"></div>
+    <div class="followRow hidden" id="followRow">
+      <input class="textIn" id="followIn" maxlength="300" autocomplete="off" placeholder="Ask a follow-up question…" aria-label="Follow-up question">
+      <button class="go" id="followBtn" style="background:#12A38F;box-shadow:0 5px 0 #0A7465">Ask</button>
+    </div>
+    <p class="muted hidden" id="exMsg" role="status" style="margin:12px 0 0"></p>
+    <div style="display:flex;flex-wrap:wrap;gap:12px">
+      <button class="go" id="explainBtn" style="background:#12A38F;box-shadow:0 5px 0 #0A7465">🤖 Explain it to me</button>
+      <button class="go" id="nextBtn">Next question</button>
+    </div>
+    </div>
+  </section>
+
+
+  <section class="card hidden" id="sFlask">
+    <div class="verdict good" id="fTitle">Correct!</div>
+    <p class="muted" id="fSub">Pick a box.</p>
+    <div class="flasks" id="flasks"></div>
+    <div class="chooser hidden" id="chooser">
+      <h3 id="chTitle"></h3>
+      <div class="targets" id="targets"></div>
+    </div>
+  </section>
+
+  <section class="card hidden" id="sStudy">
+    <div class="qmeta"><span id="stProg"></span><span id="stTopic"></span></div>
+    <div id="stCard">
+      <h2 id="stQ"></h2>
+      <button class="go" id="revealBtn" style="margin-top:4px">Show answer</button>
+      <div id="stBack" class="hidden">
+        <div class="fix"><p style="margin-bottom:6px">Answer: <b id="stA"></b></p><p class="muted" id="stWhy" style="margin:0"></p></div>
+        <div style="display:flex;flex-wrap:wrap;gap:12px">
+          <button class="go" id="knewBtn" style="background:#12A38F;box-shadow:0 5px 0 #0A7465">I’ve got it</button>
+          <button class="go" id="stillBtn" style="background:#E14B5A;box-shadow:0 5px 0 #A52C39">Still learning</button>
+        </div>
+      </div>
+    </div>
+    <div id="stDone" class="hidden">
+      <div class="verdict good">All studied!</div>
+      <p>You’ve marked every missed question as learned. Play a round to prove it.</p>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:12px;border-top:3px solid var(--line);margin-top:24px">
+      <button class="go" id="stPlayBtn">Play a round with these</button>
+      <button class="go" id="stHomeBtn" style="background:#6E679E;box-shadow:0 5px 0 #4B4575">Back to start</button>
+    </div>
+  </section>
+
+  <section class="card hidden" id="sEnd">
+    <div class="podium" id="ePodium"></div>
+    <h1 id="eTitle"></h1>
+    <div class="stats" id="eStats"></div>
+    <h3>Gold over time</h3>
+    <div class="chart" id="eChart"></div>
+    <h3>How well you know each topic</h3>
+    <div class="topics" id="eTopics"></div>
+    <div id="eMissWrap"><h3>Study these</h3><div class="missed" id="eMissed"></div></div>
+    <div style="display:flex;flex-wrap:wrap;gap:12px">
+      <button class="go" id="missBtn">Replay my missed questions</button>
+      <button class="go hidden" id="studyBtn" style="background:#E3A008;color:#2A1D00;box-shadow:0 5px 0 #A87500">Study all my missed questions</button>
+      <button class="go" id="againBtn" style="background:var(--teal);box-shadow:0 5px 0 #0A6B60">New game, all questions</button>
+    </div>
+  </section>
+</div>
+
+<div class="toast hidden" id="toast" role="status"></div>
+
+<div class="overlay hidden" id="quitBox" role="dialog" aria-modal="true" aria-labelledby="quitTitle">
+  <div class="card hidden" id="progCard" style="max-width:720px">
+    <h2>Your progress so far</h2>
+    <div class="stats" id="pStats"></div>
+    <h3>Gold over time</h3>
+    <div class="chart" id="pChart"></div>
+    <h3>Standings</h3>
+    <div class="stand" id="pStand"></div>
+    <h3>Topics</h3>
+    <div class="topics" id="pTopics"></div>
+    <div style="display:flex;flex-wrap:wrap;gap:12px">
+      <button class="go" id="pKeep">Keep playing</button>
+      <button class="go" id="pBack" style="background:#6E679E;box-shadow:0 5px 0 #4B4575">Back to options</button>
+    </div>
+  </div>
+  <div class="card" id="quitCard">
+    <h2 id="quitTitle">Leave this game?</h2>
+    <p class="muted">The game is paused. Any questions you missed are still saved for study mode.</p>
+    <div style="display:flex;flex-wrap:wrap;gap:12px">
+      <button class="go" id="keepBtn">Keep playing</button>
+      <button class="go" id="progBtn" style="background:#E3A008;color:#2A1D00;box-shadow:0 5px 0 #A87500">📊 See progress</button>
+      <button class="go" id="leaveResultsBtn" style="background:#12A38F;box-shadow:0 5px 0 #0A7465">End and see results</button>
+      <button class="go" id="leaveBtn" style="background:#E14B5A;box-shadow:0 5px 0 #A52C39">Quit to start</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// First answer in each list is the correct one; options are shuffled on screen.
+const T = {FU:"Futuro", CO:"Mandatos con tú", LU:"Lugares en la comunidad", DI:"Direcciones"};
+const QUESTIONS = [
+  // ---------- Futuro ----------
+  {t:T.FU, q:"Mañana yo ___ (hablar) con mi profesora.", a:["hablaré","hablo","hablaba","hablaría"],
+   why:"Future = the whole infinitive + ending. Yo → -é: hablar + é = hablaré."},
+  {t:T.FU, q:"Nosotros ___ (comer) en el restaurante el sábado.", a:["comeremos","comemos","comimos","comeríamos"],
+   why:"Nosotros → -emos added to the infinitive: comer + emos = comeremos."},
+  {t:T.FU, q:"Ellos ___ (vivir) en Madrid el próximo año.", a:["vivirán","viven","vivieron","vivían"],
+   why:"Ellos/ellas/ustedes → -án: vivir + án = vivirán."},
+  {t:T.FU, q:"Tú ___ (estudiar) para el examen esta noche.", a:["estudiarás","estudias","estudiarías","estudiaste"],
+   why:"Tú → -ás: estudiar + ás = estudiarás."},
+  {t:T.FU, q:"What are the future tense endings?", a:["-é, -ás, -á, -emos, -éis, -án","-o, -as, -a, -amos, -áis, -an","-ía, -ías, -ía, -íamos, -íais, -ían","-aba, -abas, -aba, -ábamos, -abais, -aban"],
+   why:"The same endings work for -ar, -er, and -ir verbs. They go on the end of the whole infinitive."},
+  {t:T.FU, q:"Tú ___ (tener) que limpiar tu cuarto.", a:["tendrás","tenerás","tienes","tendrías"],
+   why:"Tener has an irregular stem: tendr-. Tendr + ás = tendrás."},
+  {t:T.FU, q:"Yo ___ (hacer) la tarea después de la cena.", a:["haré","haceré","hago","hice"],
+   why:"Hacer’s future stem is har-. Har + é = haré."},
+  {t:T.FU, q:"¿Qué ___ (decir) tu mamá?", a:["dirá","decirá","dice","diría"],
+   why:"Decir’s future stem is dir-. Dir + á = dirá."},
+  {t:T.FU, q:"Nosotros ___ (salir) a las ocho.", a:["saldremos","saliremos","salimos","saldríamos"],
+   why:"Salir’s future stem is saldr-. Saldr + emos = saldremos."},
+  {t:T.FU, q:"Ella ___ (poner) los libros en la mesa.", a:["pondrá","ponerá","pone","ponía"],
+   why:"Poner’s future stem is pondr-. Pondr + á = pondrá."},
+  {t:T.FU, q:"¿___ (poder) tú venir a la fiesta?", a:["Podrás","Poderás","Puedes","Pudiste"],
+   why:"Poder’s future stem is podr-. Podr + ás = podrás."},
+  {t:T.FU, q:"Ustedes ___ (venir) conmigo al centro.", a:["vendrán","venirán","vienen","vinieron"],
+   why:"Venir’s future stem is vendr-. Vendr + án = vendrán."},
+  {t:T.FU, q:"Yo ___ (saber) los resultados mañana.", a:["sabré","saberé","sé","supe"],
+   why:"Saber’s future stem is sabr-. Sabr + é = sabré."},
+  {t:T.FU, q:"Mañana ___ (haber) un examen de español.", a:["habrá","haberá","hay","había"],
+   why:"Habrá means “there will be.” Haber’s future stem is habr-."},
+  {t:T.FU, q:"Which verb has an irregular future stem?", a:["querer (querr-)","hablar","comer","escribir"],
+   why:"Querer drops the e: querr-. Hablar, comer, and escribir use the whole infinitive."},
+  {t:T.FU, q:"“Iré al parque” means:", a:["I will go to the park","I went to the park","I go to the park","I would go to the park"],
+   why:"Iré is the future of ir (ir + é). Ir is regular in the future."},
+  {t:T.FU, q:"Which means the same as “Voy a comer”?", a:["Comeré","Comí","Como","Comía"],
+   why:"Ir a + infinitive (going to eat) and the future tense (I will eat) both talk about the future."},
+  {t:T.FU, q:"“Mis amigos y yo ___ (ir) al cine.”", a:["iremos","irán","irás","fuimos"],
+   why:"Mis amigos y yo = nosotros, so the ending is -emos: iremos."},
+
+  // ---------- Mandatos con tú ----------
+  {t:T.CO, q:"Affirmative tú command of hablar:", a:["habla","hables","hablas","hablar"],
+   why:"Regular affirmative tú commands use the él/ella form of the present: él habla → ¡Habla!"},
+  {t:T.CO, q:"Affirmative tú command of comer:", a:["come","comas","comes","comé"],
+   why:"Use the él/ella form: él come → ¡Come!"},
+  {t:T.CO, q:"Affirmative tú command of escribir:", a:["escribe","escribas","escribes","escribir"],
+   why:"Use the él/ella form: él escribe → ¡Escribe!"},
+  {t:T.CO, q:"Affirmative tú command of decir:", a:["di","dice","dices","diga"],
+   why:"Decir is one of the 8 irregulars: di, haz, ve, pon, sal, sé, ten, ven."},
+  {t:T.CO, q:"Affirmative tú command of hacer:", a:["haz","hace","haces","hagas"],
+   why:"Hacer → haz. (Remember “Vin Diesel has ten weapons”: ven, di, sal, haz, ten, ve, pon, sé.)"},
+  {t:T.CO, q:"Affirmative tú command of ir:", a:["ve","va","vas","vayas"],
+   why:"Ir → ve. ¡Ve a la biblioteca! = Go to the library!"},
+  {t:T.CO, q:"Affirmative tú command of poner:", a:["pon","pone","pones","pongas"],
+   why:"Poner → pon. ¡Pon la mesa! = Set the table!"},
+  {t:T.CO, q:"Affirmative tú command of salir:", a:["sal","sale","sales","salgas"],
+   why:"Salir → sal. ¡Sal de aquí! = Get out of here!"},
+  {t:T.CO, q:"Affirmative tú command of ser:", a:["sé","es","eres","seas"],
+   why:"Ser → sé (with an accent). ¡Sé bueno! = Be good!"},
+  {t:T.CO, q:"Affirmative tú command of tener:", a:["ten","tiene","tienes","tengas"],
+   why:"Tener → ten. ¡Ten cuidado! = Be careful!"},
+  {t:T.CO, q:"Affirmative tú command of venir:", a:["ven","viene","vienes","vengas"],
+   why:"Venir → ven. ¡Ven aquí! = Come here!"},
+  {t:T.CO, q:"Negative tú command of hablar:", a:["no hables","no habla","no hablas","no hablar"],
+   why:"Negative tú commands: yo form, drop the -o, add the opposite ending. -ar → -es: hablo → no hables."},
+  {t:T.CO, q:"No ___ (comer) en la clase.", a:["comas","come","comes","comer"],
+   why:"-er/-ir verbs get -as in negative commands: como → no comas."},
+  {t:T.CO, q:"No ___ (escribir) en el libro.", a:["escribas","escribe","escribes","escribir"],
+   why:"escribo → no escribas."},
+  {t:T.CO, q:"No ___ (hacer) eso.", a:["hagas","haz","haces","hace"],
+   why:"Start from the yo form: hago → no hagas. The affirmative “haz” doesn’t work with no."},
+  {t:T.CO, q:"No ___ (ir) solo al centro.", a:["vayas","ve","vas","vaya"],
+   why:"Ir is irregular in negative commands: no vayas."},
+  {t:T.CO, q:"No ___ (salir) sin tu chaqueta.", a:["salgas","sal","sales","sale"],
+   why:"salgo → no salgas."},
+  {t:T.CO, q:"No ___ (cruzar) la calle aquí.", a:["cruces","cruzes","cruza","cruzas"],
+   why:"-zar verbs change z → c before e: no cruces."},
+  {t:T.CO, q:"“Tell me” as a tú command:", a:["Dime","Me di","Di me","Me dices"],
+   why:"With affirmative commands, pronouns attach to the end: di + me = dime."},
+  {t:T.CO, q:"“Hazlo” means:", a:["Do it","Don’t do it","You do it (statement)","He did it"],
+   why:"Haz (do) + lo (it), attached because the command is affirmative."},
+  {t:T.CO, q:"“Don’t tell it to me” is:", a:["No me lo digas","No dímelo","Dímelo","No me lo di"],
+   why:"With negative commands, pronouns go before the verb: no me lo digas."},
+  {t:T.CO, q:"Which sentence is a correct tú command?", a:["Pon tu mochila aquí.","Pones tu mochila aquí.","No pon tu mochila aquí.","Ponas tu mochila aquí."],
+   why:"Pon is the affirmative tú command of poner."},
+
+  // ---------- Lugares en la comunidad ----------
+  {t:T.LU, q:"¿Dónde compras pan?", a:["en la panadería","en la carnicería","en la zapatería","en el correo"],
+   why:"Pan (bread) → la panadería."},
+  {t:T.LU, q:"¿Dónde compras medicina?", a:["en la farmacia","en la papelería","en la joyería","en la heladería"],
+   why:"Medicina → la farmacia (pharmacy)."},
+  {t:T.LU, q:"¿Dónde mandas una carta?", a:["en el correo","en el banco","en la biblioteca","en la gasolinera"],
+   why:"El correo (la oficina de correos) is the post office."},
+  {t:T.LU, q:"¿Dónde depositas dinero?", a:["en el banco","en el correo","en la pastelería","en el ayuntamiento"],
+   why:"Dinero (money) → el banco."},
+  {t:T.LU, q:"¿Dónde compras carne?", a:["en la carnicería","en la panadería","en la frutería","en la peluquería"],
+   why:"Carne (meat) → la carnicería (butcher shop)."},
+  {t:T.LU, q:"¿Dónde compras zapatos?", a:["en la zapatería","en la joyería","en la papelería","en la farmacia"],
+   why:"Zapatos (shoes) → la zapatería."},
+  {t:T.LU, q:"¿Dónde sacas libros prestados?", a:["en la biblioteca","en la librería","en el banco","en la papelería"],
+   why:"La biblioteca is the library (borrow books). Careful: la librería is a bookstore (buy books)."},
+  {t:T.LU, q:"¿Dónde pones gasolina en el carro?", a:["en la gasolinera","en el correo","en la estación de bomberos","en la plaza"],
+   why:"Gasolina → la gasolinera (gas station)."},
+  {t:T.LU, q:"¿Dónde compras un pastel de cumpleaños?", a:["en la pastelería","en la carnicería","en la zapatería","en el banco"],
+   why:"Pastel (cake) → la pastelería (bakery for cakes and pastries)."},
+  {t:T.LU, q:"¿Dónde te cortas el pelo?", a:["en la peluquería","en la panadería","en la papelería","en la joyería"],
+   why:"Pelo (hair) → la peluquería (hair salon / barbershop)."},
+  {t:T.LU, q:"¿Dónde compras un anillo o un collar?", a:["en la joyería","en la heladería","en la frutería","en la gasolinera"],
+   why:"Joyas (jewelry) → la joyería."},
+  {t:T.LU, q:"¿Dónde compras cuadernos y lápices?", a:["en la papelería","en la pastelería","en la carnicería","en la peluquería"],
+   why:"Papel (paper) → la papelería (stationery / school supply store)."},
+  {t:T.LU, q:"¿Dónde compras helado?", a:["en la heladería","en la panadería","en la farmacia","en el correo"],
+   why:"Helado (ice cream) → la heladería."},
+  {t:T.LU, q:"¿Dónde compras manzanas y plátanos?", a:["en la frutería","en la zapatería","en la joyería","en el banco"],
+   why:"Frutas → la frutería (fruit stand / shop)."},
+  {t:T.LU, q:"“La estación de bomberos” is the", a:["fire station","police station","train station","gas station"],
+   why:"Bomberos are firefighters. The police station is la estación de policía."},
+  {t:T.LU, q:"“El ayuntamiento” is the", a:["city hall","town square","shopping mall","post office"],
+   why:"El ayuntamiento is city hall. The town square is la plaza."},
+  {t:T.LU, q:"“La plaza” is the", a:["town square","plaza hotel","parking lot","market"],
+   why:"La plaza is the main square in the center of town."},
+  {t:T.LU, q:"“La librería” is a", a:["bookstore","library","school","newspaper stand"],
+   why:"False friend! La librería = bookstore. La biblioteca = library."},
+
+  // ---------- Direcciones ----------
+  {t:T.DI, q:"“Dobla a la derecha” means:", a:["Turn right","Turn left","Go straight","Cross the street"],
+   why:"Doblar = to turn. A la derecha = to the right."},
+  {t:T.DI, q:"“Dobla a la izquierda” means:", a:["Turn left","Turn right","Go straight","Stop at the corner"],
+   why:"A la izquierda = to the left."},
+  {t:T.DI, q:"“Sigue derecho” means:", a:["Go straight ahead","Turn right","Go back","Cross right"],
+   why:"Watch out: derecho = straight, but a la derecha = to the right. Todo recto also means straight ahead."},
+  {t:T.DI, q:"“Cruza la calle” means:", a:["Cross the street","Turn onto the street","Follow the street","Park on the street"],
+   why:"Cruzar = to cross. Cruza is the tú command."},
+  {t:T.DI, q:"“al lado de” means:", a:["next to","across from","behind","far from"],
+   why:"La farmacia está al lado del banco = The pharmacy is next to the bank."},
+  {t:T.DI, q:"“enfrente de” means:", a:["across from / in front of","behind","next to","on top of"],
+   why:"El parque está enfrente de la biblioteca = The park is across from the library."},
+  {t:T.DI, q:"“detrás de” means:", a:["behind","in front of","between","near"],
+   why:"Detrás de = behind. Its opposite is delante de (in front of)."},
+  {t:T.DI, q:"“cerca de” means:", a:["near","far from","between","around the corner"],
+   why:"Cerca de = near. Lejos de = far from."},
+  {t:T.DI, q:"“lejos de” means:", a:["far from","near","next to","straight ahead"],
+   why:"El estadio está lejos de mi casa = The stadium is far from my house."},
+  {t:T.DI, q:"“entre” means:", a:["between","behind","across from","until"],
+   why:"El banco está entre la panadería y el correo = The bank is between the bakery and the post office."},
+  {t:T.DI, q:"“la esquina” is the", a:["corner","traffic light","block","sidewalk"],
+   why:"Dobla en la esquina = Turn at the corner."},
+  {t:T.DI, q:"“el semáforo” is the", a:["traffic light","stop sign","crosswalk","bridge"],
+   why:"Sigue derecho hasta el semáforo = Go straight until the traffic light."},
+  {t:T.DI, q:"“la cuadra” is a", a:["city block","corner","street sign","square"],
+   why:"Está a dos cuadras = It’s two blocks away."},
+  {t:T.DI, q:"“Sigue hasta el semáforo” means:", a:["Continue until the traffic light","Turn at the traffic light","Stop before the traffic light","Cross at the traffic light"],
+   why:"Hasta = until / up to."},
+  {t:T.DI, q:"“¿Cómo llego a la biblioteca?” means:", a:["How do I get to the library?","Where is the library?","When does the library open?","Is the library far?"],
+   why:"Llegar a = to arrive at / get to. ¿Dónde está…? is “Where is…?”"},
+  {t:T.DI, q:"“Turn left at the corner” in Spanish:", a:["Dobla a la izquierda en la esquina.","Dobla a la derecha en la esquina.","Sigue derecho en la esquina.","Cruza la izquierda en la esquina."],
+   why:"Dobla (turn) + a la izquierda (left) + en la esquina (at the corner)."},
+  {t:T.DI, q:"“Sal del banco, dobla a la izquierda y sigue derecho dos cuadras. La farmacia está enfrente del parque.” Where is the pharmacy?", a:["across from the park","next to the park","behind the bank","at the corner of the bank"],
+   why:"Enfrente del parque = across from the park."},
+  {t:T.DI, q:"“Mañana iremos al museo. Está a tres cuadras, al lado del ayuntamiento.” Where is the museum?", a:["three blocks away, next to city hall","three blocks away, behind city hall","next to the post office","across from city hall"],
+   why:"A tres cuadras = three blocks away. Al lado del ayuntamiento = next to city hall."}
+];
+
+
+// ---------- Chemistry set ----------
+const CT = {RX:"Reaction types", EV:"Signs of a reaction", EM:"Empirical formulas", MO:"Moles & conversions", ST:"STP & gases", VO:"Vocabulary"};
+const CHEM_Q = [
+  // From the quiz
+  {t:CT.ST, q:"The term STP stands for", a:["Standard Temperature and Pressure","Standard Time and Presence","Standard Titanium and Platinum","Standard Theory and Practice"],
+   why:"STP means 0 °C (273 K) and 1 atm. At STP, 1 mole of any gas takes up 22.4 L."},
+  {t:CT.RX, q:"Type of reaction between a hydrocarbon and oxygen that produces carbon dioxide and water", a:["combustion","synthesis","replacement","decomposition"],
+   why:"Combustion: hydrocarbon + O₂ → CO₂ + H₂O. Think burning propane or gasoline."},
+  {t:CT.EV, q:"All of the following are evidence for a chemical reaction occurring except:", a:["shape change","color change","temperature increases","bubbling"],
+   why:"A shape change is physical, so no new substance forms. Color change, temperature change, and gas bubbles all point to a new substance."},
+  {t:CT.RX, q:"Type of reaction where one substance breaks down into many different substances", a:["decomposition","synthesis","replacement","combustion"],
+   why:"Decomposition: AB → A + B. One reactant splits into simpler products."},
+  {t:CT.EM, q:"Which example is not an empirical formula?", a:["CH₃CH₂COO","C₆H₁₁O₆","C₃H₄O₃","C₃₁H₄₂N₂O₆"],
+   why:"CH₃CH₂COO is written as a condensed structural formula: it shows how the atoms connect. Gathered up it’s C₃H₅O₂. The other three are already in lowest whole-number ratios."},
+  {t:CT.MO, q:"Which number best represents the number of particles in one mole of a substance?", a:["6.022 × 10²³","molar mass","6.022","22.4 L"],
+   why:"Avogadro’s number is 6.022 × 10²³ particles per mole. 22.4 L is the volume of a mole of gas at STP; molar mass is grams per mole."},
+  {t:CT.EM, q:"Which compound is not an empirical formula?", a:["C₆H₁₂O₆","NaCl","N₂O₅","Al(C₂H₃O₂)₃"],
+   why:"C₆H₁₂O₆ divides by 6 to give CH₂O, so it’s a molecular formula. Al(C₂H₃O₂)₃ = AlC₆H₉O₆, and 1 : 6 : 9 : 6 can’t be reduced."},
+  {t:CT.VO, q:"This is a solid that has formed during a chemical reaction between two liquids.", a:["Precipitate","Carbonate","Catalyst","Hydrocarbon"],
+   why:"A precipitate is a solid that forms when two solutions react. A catalyst speeds up a reaction without being used up."},
+  {t:CT.MO, q:"Moles can be converted into all of the following except?", a:["Pressure","Liters","Mass","Particles"],
+   why:"The mole map: moles ↔ mass (molar mass), moles ↔ particles (6.022 × 10²³), moles ↔ liters of gas (22.4 L at STP). Pressure isn’t on it."},
+  {t:CT.RX, q:"A type of reaction where two substances form a new substance", a:["synthesis","combustion","replacement","decomposition"],
+   why:"Synthesis: A + B → AB. It’s the opposite of decomposition."},
+
+  // Reaction types
+  {t:CT.RX, q:"Zn + 2HCl → ZnCl₂ + H₂ is what type of reaction?", a:["single replacement","synthesis","decomposition","combustion"],
+   why:"Zinc takes hydrogen’s place in the compound: A + BC → AC + B."},
+  {t:CT.RX, q:"2Na + Cl₂ → 2NaCl is what type of reaction?", a:["synthesis","decomposition","single replacement","combustion"],
+   why:"Two substances combine into one product: A + B → AB."},
+  {t:CT.RX, q:"2H₂O → 2H₂ + O₂ is what type of reaction?", a:["decomposition","synthesis","combustion","double replacement"],
+   why:"One reactant (water) breaks into two products: AB → A + B."},
+  {t:CT.RX, q:"CH₄ + 2O₂ → CO₂ + 2H₂O is what type of reaction?", a:["combustion","synthesis","decomposition","single replacement"],
+   why:"A hydrocarbon (CH₄) reacts with O₂ and makes CO₂ and H₂O. That’s the combustion pattern."},
+  {t:CT.RX, q:"AgNO₃ + NaCl → AgCl + NaNO₃ is what type of reaction?", a:["double replacement","synthesis","decomposition","combustion"],
+   why:"Two compounds swap partners: AB + CD → AD + CB. The AgCl that forms is a precipitate."},
+  {t:CT.RX, q:"What products always form when a hydrocarbon burns completely?", a:["CO₂ and H₂O","CO₂ and H₂","O₂ and H₂O","C and H₂"],
+   why:"Complete combustion of a hydrocarbon always gives carbon dioxide and water."},
+  {t:CT.RX, q:"Decomposition is the opposite of which type of reaction?", a:["synthesis","combustion","single replacement","double replacement"],
+   why:"Synthesis builds one product from two (A + B → AB); decomposition breaks one into two (AB → A + B)."},
+
+  // Signs of a reaction
+  {t:CT.EV, q:"Which is a physical change, not a chemical reaction?", a:["Ice melting","Iron rusting","Wood burning","Baking soda fizzing in vinegar"],
+   why:"Melting changes state, but it’s still water. Rusting, burning, and fizzing all make new substances."},
+  {t:CT.EV, q:"Bubbles forming when two liquids are mixed are evidence that", a:["a gas is being produced","the liquids are freezing","a solid is dissolving","no reaction happened"],
+   why:"New bubbles mean a gas formed, which is a sign of a chemical reaction."},
+  {t:CT.EV, q:"Which is NOT evidence of a chemical reaction?", a:["Sugar dissolving in water","A precipitate forming","Light being given off","An unexpected color change"],
+   why:"Dissolving is physical; the sugar is still sugar. A precipitate, light, and color change point to new substances."},
+  {t:CT.EV, q:"A beaker gets warm after two chemicals are mixed. This is evidence of", a:["a chemical reaction","a change of shape","a physical mixture only","a precipitate"],
+   why:"A temperature change (heat given off or absorbed) is one of the signs of a chemical reaction."},
+
+  // Empirical formulas
+  {t:CT.EM, q:"An empirical formula shows", a:["the simplest whole-number ratio of atoms","the exact number of atoms in a molecule","how the atoms are bonded together","the mass of one mole"],
+   why:"Empirical = simplest ratio. The molecular formula gives the actual count of atoms."},
+  {t:CT.EM, q:"What is the empirical formula of C₂H₄?", a:["CH₂","C₂H₄","CH₄","C₄H₈"],
+   why:"Divide every subscript by 2: C₂H₄ → CH₂."},
+  {t:CT.EM, q:"What is the empirical formula of H₂O₂?", a:["HO","H₂O","H₂O₂","HO₂"],
+   why:"Divide both subscripts by 2: H₂O₂ → HO."},
+  {t:CT.EM, q:"What is the empirical formula of C₆H₆?", a:["CH","C₆H₆","C₃H₃","CH₆"],
+   why:"6 and 6 share a factor of 6: C₆H₆ → CH."},
+  {t:CT.EM, q:"What is the empirical formula of C₄H₁₀?", a:["C₂H₅","CH₂","C₄H₁₀","CH₃"],
+   why:"4 and 10 share a factor of 2: C₄H₁₀ → C₂H₅."},
+  {t:CT.EM, q:"Which formula is already an empirical formula?", a:["CO₂","C₂H₆","N₂O₄","C₆H₁₂O₆"],
+   why:"1 : 2 can’t be reduced. C₂H₆ → CH₃, N₂O₄ → NO₂, and C₆H₁₂O₆ → CH₂O."},
+  {t:CT.EM, q:"Glucose is C₆H₁₂O₆. What is its empirical formula?", a:["CH₂O","C₃H₆O₃","C₆H₁₂O₆","CHO"],
+   why:"Every subscript divides by 6: C₆H₁₂O₆ → CH₂O."},
+
+  // Moles & conversions
+  {t:CT.MO, q:"How many particles are in 2 moles of a substance?", a:["1.2044 × 10²⁴","6.022 × 10²³","3.011 × 10²³","44.8"],
+   why:"2 × 6.022 × 10²³ = 1.2044 × 10²⁴ particles."},
+  {t:CT.MO, q:"3.011 × 10²³ atoms is how many moles?", a:["0.5 mol","2 mol","1 mol","3.011 mol"],
+   why:"Divide by Avogadro’s number: 3.011 × 10²³ ÷ 6.022 × 10²³ = 0.5 mol."},
+  {t:CT.MO, q:"What is the molar mass of H₂O?", a:["18 g/mol","16 g/mol","10 g/mol","34 g/mol"],
+   why:"2 hydrogens (1 each) + 1 oxygen (16) = 18 g/mol."},
+  {t:CT.MO, q:"What is the molar mass of CO₂?", a:["44 g/mol","28 g/mol","32 g/mol","22.4 g/mol"],
+   why:"1 carbon (12) + 2 oxygens (16 each) = 44 g/mol."},
+  {t:CT.MO, q:"How many moles are in 36 g of H₂O?", a:["2 mol","0.5 mol","18 mol","648 mol"],
+   why:"Grams ÷ molar mass: 36 g ÷ 18 g/mol = 2 mol."},
+  {t:CT.MO, q:"NaCl has a molar mass of 58.5 g/mol. What is the mass of 3 moles?", a:["175.5 g","19.5 g","58.5 g","61.5 g"],
+   why:"Moles × molar mass: 3 × 58.5 = 175.5 g."},
+  {t:CT.MO, q:"To convert grams to moles, you", a:["divide by the molar mass","multiply by the molar mass","multiply by 6.022 × 10²³","divide by 22.4 L"],
+   why:"Grams ÷ (g/mol) = mol. Going the other way, moles × molar mass = grams."},
+  {t:CT.MO, q:"Molar mass is measured in", a:["g/mol","L/mol","particles/mol","atm"],
+   why:"Molar mass is the mass of one mole: grams per mole."},
+
+  // STP & gases
+  {t:CT.ST, q:"What volume does 1 mole of any gas take up at STP?", a:["22.4 L","6.022 L","1.0 L","273 L"],
+   why:"At STP, 1 mole of any gas fills 22.4 L. That’s the moles ↔ liters conversion."},
+  {t:CT.ST, q:"How many liters do 2 moles of a gas take up at STP?", a:["44.8 L","22.4 L","11.2 L","2 L"],
+   why:"2 mol × 22.4 L/mol = 44.8 L."},
+  {t:CT.ST, q:"11.2 L of a gas at STP is how many moles?", a:["0.5 mol","2 mol","11.2 mol","1 mol"],
+   why:"Liters ÷ 22.4: 11.2 ÷ 22.4 = 0.5 mol."},
+  {t:CT.ST, q:"Standard temperature at STP is", a:["0 °C (273 K)","25 °C (298 K)","100 °C (373 K)","0 K"],
+   why:"STP uses 0 °C, which is 273 K, and 1 atm of pressure."},
+  {t:CT.ST, q:"Standard pressure at STP is", a:["1 atm","0 atm","22.4 atm","6.022 atm"],
+   why:"STP pressure is 1 atmosphere (the same as 101.3 kPa or 760 mmHg)."},
+
+  // Vocabulary
+  {t:CT.VO, q:"What does a catalyst do?", a:["Speeds up a reaction without being used up","Forms a solid between two liquids","Breaks one compound into several","Reacts with oxygen to make CO₂"],
+   why:"A catalyst lowers the energy needed to react, so the reaction goes faster, and the catalyst comes out unchanged."},
+  {t:CT.VO, q:"A hydrocarbon is a compound made of", a:["only hydrogen and carbon","hydrogen, carbon, and oxygen","only carbon and oxygen","only hydrogen and oxygen"],
+   why:"Hydro- (hydrogen) + carbon. Examples: CH₄, C₃H₈, C₈H₁₈."},
+  {t:CT.VO, q:"In A + B → C, the substances A and B are called", a:["reactants","products","catalysts","precipitates"],
+   why:"Reactants are on the left of the arrow; products are on the right."},
+  {t:CT.VO, q:"When AgNO₃ and NaCl solutions mix, a white solid (AgCl) appears. The solid is a", a:["precipitate","catalyst","hydrocarbon","gas"],
+   why:"A solid that forms from two solutions is a precipitate."}
+];
+
+const PETS = ["🦊","🐸","🐙","🦉","🐢","🐧","🦖","🐝"];
+const BOT_POOL = [["🐼","Panda"],["🦄","Unicorn"],["🐯","Tiger"],["🐨","Koala"],["🦝","Raccoon"],["🐳","Whale"],["🦁","Lion"],["🐰","Bunny"],["🐻","Bear"],["🦒","Giraffe"],["🐵","Monkey"],["🦩","Flamingo"],["🐊","Croc"],["🦈","Shark"],["🐞","Ladybug"],["🦔","Hedgehog"],["🐿️","Squirrel"],["🦜","Parrot"],["🐮","Cow"],["🦦","Otter"]];
+const GOALS = [500,1000,2500,5000];
+const TIMES = [3,5,10];
+
+const $ = id => document.getElementById(id);
+const shuffle = arr => { const a=[...arr]; for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]} return a; };
+const rand = (lo,hi) => Math.floor(Math.random()*(hi-lo+1))+lo;
+const fmt = n => n.toLocaleString();
+
+let S, botTimer=null, clockTimer=null, lastMissed=[];
+const cfg = {pet:PETS[0], mode:"race", goal:1000, minutes:5, bots:3, play:"solo", botLevel:"normal"};
+
+function segPick(box, btn){ [...box.children].forEach(x=>x.setAttribute("aria-pressed", x===btn?"true":"false")); }
+
+// ---------- Draw your player ----------
+const PAL=["#1F1A2E","#E14B5A","#F28C28","#F2C500","#2BAE66","#2F80ED","#8E5BD8","#8B5A2B","#FF8FBF","#9A9A9A"];
+const pad=$("pad"), pctx=pad.getContext("2d");
+let penColor=PAL[0], penSize=12, erasing=false, drawing=false, lastPt=null, undoStack=[];
+function padBlank(){ pctx.fillStyle="#fff"; pctx.fillRect(0,0,pad.width,pad.height); }
+padBlank();
+function saveAvatar(){ try{ localStorage.setItem("sq-avatar", pad.toDataURL("image/png")); }catch(e){} }
+try{ const saved=localStorage.getItem("sq-avatar"); if(saved && saved.startsWith("data:image/png")){ const im=new Image(); im.onload=()=>{ pctx.drawImage(im,0,0,pad.width,pad.height); }; im.src=saved; } }catch(e){}
+PAL.forEach((c,i)=>{
+  const b=document.createElement("button"); b.style.background=c; b.setAttribute("aria-label","Color "+(i+1));
+  b.setAttribute("aria-pressed", i===0?"true":"false");
+  b.onclick=()=>{ penColor=c; erasing=false; $("eraseBtn").setAttribute("aria-pressed","false"); segPick($("swatches"),b); };
+  $("swatches").appendChild(b);
+});
+[...$("sizeSeg").children].forEach(b=>{ b.onclick=()=>{ penSize=+b.dataset.s; segPick($("sizeSeg"),b); }; });
+$("eraseBtn").onclick=()=>{ erasing=!erasing; $("eraseBtn").setAttribute("aria-pressed", erasing?"true":"false"); };
+$("undoBtn").onclick=()=>{ const last=undoStack.pop(); if(!last) return; pctx.putImageData(last,0,0); saveAvatar(); };
+$("clearBtn").onclick=()=>{ undoStack.push(pctx.getImageData(0,0,pad.width,pad.height)); if(undoStack.length>20) undoStack.shift(); padBlank(); saveAvatar(); };
+function padPt(e){ const r=pad.getBoundingClientRect(); return [(e.clientX-r.left)*pad.width/r.width, (e.clientY-r.top)*pad.height/r.height]; }
+function stroke(a,b){
+  pctx.strokeStyle = erasing ? "#fff" : penColor; pctx.lineWidth = erasing ? penSize*2 : penSize;
+  pctx.lineCap="round"; pctx.lineJoin="round";
+  pctx.beginPath(); pctx.moveTo(a[0],a[1]); pctx.lineTo(b[0],b[1]); pctx.stroke();
+}
+pad.addEventListener("pointerdown",e=>{
+  e.preventDefault(); pad.setPointerCapture(e.pointerId); drawing=true;
+  undoStack.push(pctx.getImageData(0,0,pad.width,pad.height)); if(undoStack.length>20) undoStack.shift();
+  lastPt=padPt(e); stroke(lastPt,[lastPt[0]+0.1,lastPt[1]+0.1]);
+});
+pad.addEventListener("pointermove",e=>{ if(!drawing) return; const pt=padPt(e); stroke(lastPt,pt); lastPt=pt; });
+["pointerup","pointercancel","pointerleave"].forEach(ev=>pad.addEventListener(ev,()=>{ if(drawing){ drawing=false; saveAvatar(); } }));
+function padHasInk(){
+  const d=pctx.getImageData(0,0,pad.width,pad.height).data;
+  for(let i=0;i<d.length;i+=16){ if(d[i]<235||d[i+1]<235||d[i+2]<235) return true; }
+  return false;
+}
+// Small 20x20 version to send to friends (fits in a game message)
+function avatarCode(){
+  if(!padHasInk()) return "";
+  const c=document.createElement("canvas"); c.width=20; c.height=20; const x=c.getContext("2d");
+  x.imageSmoothingEnabled=true; x.drawImage(pad,0,0,20,20);
+  const d=x.getImageData(0,0,20,20).data, rgb=PAL.map(h=>[1,3,5].map(i=>parseInt(h.slice(i,i+2),16)));
+  let out="";
+  for(let i=0;i<d.length;i+=4){
+    const r=d[i],g=d[i+1],b=d[i+2];
+    if(r>215&&g>215&&b>215){ out+="."; continue; }
+    let best=0,bd=1e9; rgb.forEach((c2,k)=>{ const dd=(c2[0]-r)**2+(c2[1]-g)**2+(c2[2]-b)**2; if(dd<bd){bd=dd;best=k;} });
+    out+=best;
+  }
+  return out;
+}
+const codeCache=new Map();
+function codeToImg(code){
+  if(typeof code!=="string" || !/^[.0-9]{400}$/.test(code)) return null;
+  if(codeCache.has(code)) return codeCache.get(code);
+  const c=document.createElement("canvas"); c.width=20; c.height=20; const x=c.getContext("2d");
+  x.fillStyle="#fff"; x.fillRect(0,0,20,20);
+  [...code].forEach((ch,i)=>{ if(ch==="."){ return; } x.fillStyle=PAL[+ch]; x.fillRect(i%20,Math.floor(i/20),1,1); });
+  const big=document.createElement("canvas"); big.width=80; big.height=80; const bx=big.getContext("2d");
+  bx.imageSmoothingEnabled=false; bx.drawImage(c,0,0,80,80);
+  const url=big.toDataURL("image/png"); codeCache.set(code,url); return url;
+}
+let myAvCache=null;
+function refreshMyAvatar(){ myAvCache = padHasInk() ? {img:pad.toDataURL("image/png"), emoji:"🙂"} : {img:null, emoji:"🙂"}; }
+function meAv(){ if(!myAvCache) refreshMyAvatar(); return myAvCache; }
+function avatarHTML(r){
+  if(r && r.img) return `<img class="av${r.px?" px":""}" src="${r.img}" alt="">`;
+  return `<span class="avE">${esc((r && r.emoji) || "🙂")}</span>`;
+}
+GOALS.forEach(g=>{
+  const b=document.createElement("button"); b.textContent=fmt(g)+" gold";
+  b.setAttribute("aria-pressed", g===cfg.goal?"true":"false");
+  b.onclick=()=>{ cfg.goal=g; segPick($("goalSeg"),b); };
+  $("goalSeg").appendChild(b);
+});
+TIMES.forEach(m=>{
+  const b=document.createElement("button"); b.textContent=m+" minutes";
+  b.setAttribute("aria-pressed", m===cfg.minutes?"true":"false");
+  b.onclick=()=>{ cfg.minutes=m; segPick($("timeSeg"),b); };
+  $("timeSeg").appendChild(b);
+});
+// Custom gold target and time limit
+function addCustom(segId, wrapId, inId, lo, hi, set){
+  const b=document.createElement("button"); b.textContent="Custom"; b.setAttribute("aria-pressed","false");
+  const apply=(fix)=>{ let v=parseFloat($(inId).value); if(!(v>0)) return; v=Math.min(hi,Math.max(lo,v)); set(v); if(fix) $(inId).value=v; };
+  b.onclick=()=>{ segPick($(segId),b); $(wrapId).classList.remove("hidden"); apply(true); $(inId).focus(); $(inId).select(); };
+  $(segId).appendChild(b);
+  [...$(segId).children].forEach(x=>{ if(x!==b) x.addEventListener("click",()=>$(wrapId).classList.add("hidden")); });
+  $(inId).addEventListener("input",()=>apply(false));
+  $(inId).addEventListener("change",()=>apply(true));
+}
+addCustom("goalSeg","goalCustom","goalIn",100,100000,v=>{ cfg.goal=Math.round(v); });
+addCustom("timeSeg","timeCustom","timeIn",1,60,v=>{ cfg.minutes=v; });
+
+[0,1,3,5].forEach(n=>{
+  const b=document.createElement("button"); b.textContent = n===0 ? "None (solo)" : `${n} bot${n>1?"s":""}`;
+  b.setAttribute("aria-pressed", n===cfg.bots?"true":"false");
+  b.onclick=()=>{ cfg.bots=n; segPick($("botSeg"),b); };
+  $("botSeg").appendChild(b);
+});
+addCustom("botSeg","botCustom","botIn",0,20,v=>{ cfg.bots=Math.round(v); });
+// Bot levels: how fast bots earn, how often they slip up, and whether they steal from you
+const BOT_LEVELS={
+  easy:{label:"Easy", speed:0.6, miss:0.32, spill:0.12, steal:0, note:"Slow bots that miss a lot. Good for warming up."},
+  normal:{label:"Normal", speed:1, miss:0.2, spill:0.1, steal:0, note:"The regular bots."},
+  hard:{label:"Hard", speed:1.6, miss:0.12, spill:0.06, steal:0, note:"Faster bots that rarely miss."},
+  expert:{label:"Expert", speed:2.3, miss:0.08, spill:0.04, steal:0.03, note:"Very fast, and they sometimes steal gold from you."},
+  impossible:{label:"Impossible 💀", speed:3.2, miss:0.04, spill:0.02, steal:0.06, note:"Almost never miss and steal from you often. Good luck."}
+};
+Object.entries(BOT_LEVELS).forEach(([k,v])=>{
+  const b=document.createElement("button"); b.textContent=v.label; b.setAttribute("aria-pressed", k===cfg.botLevel?"true":"false");
+  b.onclick=()=>{ cfg.botLevel=k; segPick($("botLvSeg"),b); $("botLvNote").textContent=v.note; };
+  $("botLvSeg").appendChild(b);
+});
+$("botLvNote").textContent=BOT_LEVELS[cfg.botLevel].note;
+function updatePlayUI(){
+  const p=cfg.play;
+  $("nickWrap").classList.toggle("hidden", p==="solo");
+  $("codeWrap").classList.toggle("hidden", p!=="join");
+  $("setupWrap").classList.toggle("hidden", p==="join");
+  $("botWrap").classList.toggle("hidden", p!=="solo");
+  $("startBtn").textContent = p==="host" ? "Create game" : p==="join" ? "Join game" : "Start game";
+  $("startMsg").textContent="";
+  if(typeof updateSetupVis==="function") updateSetupVis();
+}
+[...$("playSeg").children].forEach(b=>{ b.onclick=()=>{ cfg.play=b.dataset.play; segPick($("playSeg"),b); updatePlayUI(); }; });
+try{ const nk=localStorage.getItem("sq-nick"); if(nk) $("nickIn").value=nk; }catch(e){}
+[...$("modeSeg").children].forEach(b=>{
+  b.onclick=()=>{ cfg.mode=b.dataset.mode; segPick($("modeSeg"),b);
+    $("goalWrap").classList.toggle("hidden", cfg.mode!=="race");
+    $("timeWrap").classList.toggle("hidden", cfg.mode!=="time"); };
+});
+
+// ---- Custom topic: Claude writes a question set ----
+const esc = s => String(s).replace(/[&<>"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+let genCount=15, genCtl=null;
+const samplePromise = window.claude ? claude.use("sample") : Promise.resolve(null);
+const status = m => { $("makeStatus").textContent = m; };
+const UNAVAILABLE = "Custom topics only work when this game is opened inside Claude.";
+const ERR = {
+  not_granted:"Claude access wasn’t allowed, so custom topics are off. Reload the page to be asked again.",
+  sampling_disabled:"Claude isn’t available for this account, so custom topics are off.",
+  rate_limited:"Too many requests right now. Wait a minute, then try again.",
+  session_expired:"Sign in to Claude again, then try again.",
+  refused:"Claude couldn’t make questions for that. Try a different topic.",
+  invalid_json:"The questions came back garbled. Try again.",
+  empty_completion:"Nothing came back. Try a shorter or clearer topic.",
+  prompt_too_large:"That’s too much text. Paste a shorter section of your notes."
+};
+[10,15,20].forEach(n=>{
+  const b=document.createElement("button"); b.textContent=n+" questions";
+  b.setAttribute("aria-pressed", n===genCount?"true":"false");
+  b.onclick=()=>{ genCount=n; segPick($("countSeg"),b); };
+  $("countSeg").appendChild(b);
+});
+addCustom("countSeg","countCustom","countIn",3,40,v=>{ genCount=Math.round(v); });
+// ---------- Question library ----------
+const BUILTIN=[
+  {id:"spanish", icon:"🗺️", title:"Spanish: future, tú commands, places, directions", questions:QUESTIONS, builtin:true},
+  {id:"chem", icon:"🧪", title:"Chemistry: reactions, moles, empirical formulas", questions:CHEM_Q, builtin:true}
+];
+let customSets=[], selectedId="spanish", making=false, canMake=true, vamosMode="show";
+const selTopics=new Set();
+const libMsg = m => { $("libMsg").textContent = m; };
+const fmtDate = ts => { try{ return new Date(ts).toLocaleDateString(undefined,{month:"short",day:"numeric"}); }catch(e){ return ""; } };
+const mkBtn = (txt,cls) => { const b=document.createElement("button"); b.textContent=txt; if(cls) b.className=cls; return b; };
+
+function currentSet(){ return [...BUILTIN, ...customSets, ...publicSets].find(x=>x.id===selectedId); }
+
+function libRow(set, opts){
+  const row=document.createElement("div"); row.className="libItem"+(!making && set.id===selectedId ? " sel" : "");
+  const pick=document.createElement("button"); pick.className="libPick";
+  pick.innerHTML=`<span class="ic"></span><span><b></b><small></small></span>`;
+  pick.querySelector(".ic").textContent=set.icon||"✨";
+  pick.querySelector("b").textContent=set.title;
+  pick.querySelector("small").textContent=opts.sub;
+  pick.setAttribute("aria-pressed", (!making && set.id===selectedId) ? "true" : "false");
+  pick.onclick=()=>selectSet(set.id);
+  row.appendChild(pick);
+  if(opts.mine){
+    const acts=document.createElement("div"); acts.className="libActs";
+    const pub=mkBtn(set.public ? "🌍 Public" : "🔒 Private", set.public ? "pub" : "");
+    pub.title = set.public ? "Anyone on Study Quest can play this. Tap to make it private." : "Only you can see this. Tap to share it publicly.";
+    pub.onclick=()=>togglePublic(set);
+    const rn=mkBtn("Rename"), del=mkBtn("Delete","danger");
+    rn.onclick=()=>startRename(row,set);
+    del.onclick=()=>{
+      if(del.dataset.armed){ deleteSet(set); return; }
+      del.dataset.armed="1"; del.textContent="Tap again to delete";
+      setTimeout(()=>{ if(del.isConnected){ delete del.dataset.armed; del.textContent="Delete"; } },3000);
+    };
+    acts.append(pub,rn,del); row.appendChild(acts);
+  }
+  return row;
+}
+function libHead(t){ const h=document.createElement("p"); h.className="libHead"; h.textContent=t; return h; }
+function renderLibrary(){
+  const box=$("libList"); box.innerHTML="";
+  box.appendChild(libHead("Built in"));
+  { const row=document.createElement("div"); row.className="libItem"+(!making && selectedId==="vamos" ? " sel" : "");
+    row.innerHTML=`<button class="libPick"><span class="ic">🎤</span><span><b>¡Vamos! Quiz Show</b><small>Spanish · type your answers · map challenge</small></span></button>`;
+    row.querySelector("button").setAttribute("aria-pressed", (!making && selectedId==="vamos") ? "true" : "false");
+    row.querySelector("button").onclick=()=>selectSet("vamos");
+    box.appendChild(row); }
+  BUILTIN.forEach(set=>box.appendChild(libRow(set,{sub:`${set.questions.length} questions · built in`})));
+  box.appendChild(libHead("My sets"));
+  const mine=customSets.slice().sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
+  mine.forEach(set=>box.appendChild(libRow(set,{mine:true, sub:`${set.questions.length} questions${set.createdAt?" · made "+fmtDate(set.createdAt):""}`})));
+  const add=document.createElement("div"); add.className="libItem"+(making?" sel":"");
+  add.innerHTML=`<button class="libPick"><span class="ic">➕</span><span><b>Make a new set</b><small>From a word list, your own questions, or Claude</small></span></button>`;
+  add.querySelector("button").onclick=()=>openBuilder();
+  box.appendChild(add);
+  if(publicSets.length){
+    box.appendChild(libHead("Public games"));
+    publicSets.slice().sort((a,b)=>(b.createdAt||0)-(a.createdAt||0))
+      .forEach(set=>box.appendChild(libRow(set,{sub:`by ${set.ownerName} · ${set.questions.length} questions`})));
+  }
+}
+
+function selectSet(id){
+  making=false; selectedId=id;
+  $("customWrap").classList.add("hidden"); $("startMsg").textContent="";
+  renderLibrary(); renderTopics();
+}
+
+function updateSetupVis(){
+  const v = selectedId==="vamos" && !making;
+  ["modeHead","modeSeg"].forEach(id=>$(id).classList.toggle("hidden", v));
+  $("goalWrap").classList.toggle("hidden", v || cfg.mode!=="race");
+  $("timeWrap").classList.toggle("hidden", v || cfg.mode!=="time");
+  $("botWrap").classList.toggle("hidden", v || cfg.play!=="solo");
+}
+function renderTopics(){
+  const set=currentSet(), box=$("topicSeg"); box.innerHTML=""; selTopics.clear();
+  updateSetupVis();
+  if(selectedId==="vamos" && !making){
+    $("topicHead").textContent="Quiz Show round";
+    $("topicWrap").classList.remove("hidden");
+    [["show","Full show (15 mixed)"],["easy","Easy map"],["hard","Hard map"],["expert","Expert map"],["impossible","Impossible map 💀"]].forEach(([k,l])=>{
+      const b=mkBtn(l); b.setAttribute("aria-pressed", vamosMode===k?"true":"false");
+      b.onclick=()=>{ vamosMode=k; segPick(box,b); $("startMsg").textContent=""; };
+      box.appendChild(b);
+    });
+    return;
+  }
+  $("topicHead").textContent="Topics to practice";
+  if(!set || making){ $("topicWrap").classList.add("hidden"); return; }
+  const topics=[...new Set(set.questions.map(x=>x.t))];
+  topics.forEach(t=>selTopics.add(t));
+  $("topicWrap").classList.toggle("hidden", topics.length<2);
+  topics.forEach(t=>{
+    const b=mkBtn(t); b.setAttribute("aria-pressed","true");
+    b.onclick=()=>{ if(selTopics.has(t)) selTopics.delete(t); else selTopics.add(t);
+      b.setAttribute("aria-pressed", selTopics.has(t)?"true":"false"); $("startMsg").textContent=""; };
+    box.appendChild(b);
+  });
+}
+
+function activePool(){
+  if(making) return null;
+  const set=currentSet(); if(!set) return null;
+  const pool=set.questions.filter(x=>selTopics.has(x.t));
+  return pool.length ? pool : null;
+}
+
+function startRename(row,set){
+  row.innerHTML=""; row.className="libItem editing";
+  const inp=document.createElement("input"); inp.value=set.title; inp.maxLength=80; inp.setAttribute("aria-label","Set name");
+  const save=mkBtn("Save"); save.className="ghost"; save.style.color="var(--violet)";
+  const done=async()=>{
+    const v=inp.value.trim();
+    if(v && v!==set.title){
+      const old=set.title; set.title=v;
+      try{ const st=await getStore(); await st.rename(set.id,v); libMsg(""); }
+      catch(e){ set.title=old; libMsg("Couldn’t save the new name. Try again."); }
+    }
+    renderLibrary();
+  };
+  inp.onkeydown=e=>{ if(e.key==="Enter") done(); if(e.key==="Escape") renderLibrary(); };
+  save.onclick=done;
+  row.append(inp,save); inp.focus(); inp.select();
+}
+
+async function deleteSet(set){
+  customSets=customSets.filter(x=>x.id!==set.id);
+  if(selectedId===set.id) selectedId="spanish";
+  renderLibrary(); renderTopics();
+  try{ const st=await getStore(); await st.remove(set.id); libMsg(`Deleted “${set.title}”.`); }
+  catch(e){ customSets.push(set); renderLibrary(); libMsg("Couldn’t delete that set. Try again."); }
+}
+
+// Storage: Firebase. Your sets are saved to your own account; public ones can be seen by everyone.
+const FB_CONFIG = {
+  apiKey: "AIzaSyDGUd5B58XPLq8sNvr_GutVyDOeuoNkF3E",
+  authDomain: "study-quest-7a123.firebaseapp.com",
+  projectId: "study-quest-7a123",
+  storageBucket: "study-quest-7a123.firebasestorage.app",
+  messagingSenderId: "372323736731",
+  appId: "1:372323736731:web:bd9b3401ab6402f3cd3a3e"
+};
+firebase.initializeApp(FB_CONFIG);
+const auth=firebase.auth(), fdb=firebase.firestore();
+const withTimeout=(p,ms)=>Promise.race([p, new Promise((_,rej)=>setTimeout(()=>rej({code:"timeout"}),ms))]);
+let store=null, publicSets=[], ME=null, storeWaiters=[];
+function fireStore(uid){
+  const col=fdb.collection("sets");
+  return {
+    list:async()=>{ const q=await col.where("owner","==",uid).get(); return q.docs.map(d=>({id:d.id, ...d.data()})); },
+    listPublic:async()=>{ const q=await col.where("public","==",true).limit(150).get(); return q.docs.map(d=>({id:d.id, ...d.data()})); },
+    save:x=>col.doc(x.id).set({owner:uid, ownerName:ME.name, title:x.title, icon:x.icon, createdAt:x.createdAt, questions:x.questions, public:!!x.public}),
+    remove:id=>col.doc(id).delete(),
+    rename:(id,t)=>col.doc(id).update({title:t}),
+    setPublic:(id,v)=>col.doc(id).update({public:v, ownerName:ME.name})
+  };
+}
+async function getStore(){ if(store) return store; await new Promise(r=>storeWaiters.push(r)); return store; }
+function normSet(x){
+  return {id:String(x.id), icon:typeof x.icon==="string"?x.icon.slice(0,4):"✨", title:String(x.title||"Untitled").slice(0,80),
+    createdAt:Number(x.createdAt)||0, public:x.public===true, owner:String(x.owner||""),
+    ownerName:String(x.ownerName||"Someone").slice(0,20), questions:cleanSet({questions:x.questions},200)};
+}
+async function loadSets(){
+  libMsg("Loading your sets…");
+  try{
+    const [mine,pub]=await Promise.all([withTimeout(store.list(),15000), withTimeout(store.listPublic(),15000)]);
+    customSets=(mine||[]).map(normSet).filter(x=>x.questions.length);
+    publicSets=(pub||[]).map(normSet).filter(x=>x.questions.length && x.owner!==ME.uid);
+    libMsg(""); renderLibrary(); renderTopics();
+  }catch(e){ libMsg("Couldn’t load sets right now. Check your connection and reload the page."); }
+}
+async function togglePublic(set){
+  const was=set.public; set.public=!was; renderLibrary();
+  try{ const st=await getStore(); await st.setPublic(set.id, set.public);
+    libMsg(set.public ? `“${set.title}” is now public. Anyone on Study Quest can play it.` : `“${set.title}” is private again.`); }
+  catch(e){ set.public=was; renderLibrary(); libMsg("Couldn’t change that. Try again."); }
+}
+renderLibrary(); renderTopics();
+
+function cleanSet(d, max=40){
+  const arr = Array.isArray(d) ? d : (d && Array.isArray(d.questions) ? d.questions : []);
+  return arr.filter(x=>x && typeof x.q==="string" && x.q.trim() && Array.isArray(x.a) && x.a.length===4
+      && x.a.every(o=>typeof o==="string" && o.trim()) && new Set(x.a.map(o=>o.trim())).size===4)
+    .map(x=>({ t:(typeof x.t==="string" && x.t.trim()) || "Custom topic", q:x.q.trim(), a:x.a.map(o=>o.trim()),
+      why: typeof x.why==="string" ? x.why.trim() : "" }))
+    .slice(0,max);
+}
+
+async function makeSet(){
+  const topic=$("topicIn").value.trim();
+  if(!topic){ status("Type a topic or paste your notes first."); $("topicIn").focus(); return; }
+  const sample = await samplePromise;
+  if(!sample){ status(UNAVAILABLE); return; }
+  genCtl = new AbortController();
+  $("makeBtn").disabled=true; $("stopBtn").classList.remove("hidden");
+  const t0=Date.now();
+  status("Writing your questions…");
+  const tick=setInterval(()=>status(`Writing your questions… ${Math.round((Date.now()-t0)/1000)}s`),1000);
+  const prompt = `Write ${genCount} multiple-choice review questions for a high school student studying the topic or notes below.
+
+TOPIC OR NOTES:
+"""
+${topic}
+"""
+
+Rules:
+- Every question must be accurate and match what a high school class would cover. If notes are given, base the questions on them.
+- Each question has exactly 4 different options. The FIRST option is the correct answer; the other three are plausible wrong answers.
+- Keep options short (under 12 words). Never use "all of the above" or "none of the above".
+- "why" is one or two sentences explaining why the correct answer is right.
+- "t" is a short subtopic name (2 to 4 words). Use 3 to 6 different subtopics across the set so the student can see which parts they know.
+- For language topics, use correct accents and punctuation (é, ñ, ¿, ¡) and put the question in the target language when it fits, with English where it helps.
+- Mix recall questions with ones that check understanding (using the idea in a sentence, picking an example, reading a short passage).
+
+Return ONLY JSON, no other text, in this shape:
+{"title":"short name for this set","questions":[{"t":"subtopic","q":"question","a":["correct","wrong","wrong","wrong"],"why":"explanation"}]}`;
+  try{
+    const data = await sample.json(prompt, {signal:genCtl.signal});
+    const qs = cleanSet(data);
+    if(qs.length<4) throw {code:"few"};
+    const title = ((data && typeof data.title==="string" && data.title.trim()) || topic.slice(0,40)).slice(0,80);
+    const set={id:"s"+Date.now().toString(36)+Math.random().toString(36).slice(2,6), icon:"✨", title, createdAt:Date.now(), questions:qs};
+    customSets.push(set);
+    $("topicIn").value=""; status("");
+    selectSet(set.id);
+    try{ const st=await getStore(); await st.save(set); libMsg(`Saved “${title}” to your library (${qs.length} questions). Pick your mode and press Start game.`); }
+    catch(e){ libMsg(`Made “${title}”, but it couldn’t be saved to your library. You can still play it now.`); }
+    $("startBtn").focus();
+  }catch(e){
+    if(e && e.code==="cancelled") status("Stopped.");
+    else if(e && e.code==="few") status("Not enough usable questions came back. Try again or make the topic more specific.");
+    else status((e && ERR[e.code]) || "Something went wrong. Try again.");
+    if(e && (e.code==="not_granted" || e.code==="sampling_disabled")){ clearInterval(tick); $("stopBtn").classList.add("hidden"); return; }
+  }finally{
+    clearInterval(tick);
+    $("stopBtn").classList.add("hidden");
+  }
+  $("makeBtn").disabled=false;
+}
+$("makeBtn").onclick=makeSet;
+$("stopBtn").onclick=()=>genCtl && genCtl.abort();
+
+function show(id){ ["sStart","sLobby","sQ","sFlask","sEnd","sStudy"].forEach(s=>$(s).classList.toggle("hidden", s!==id)); window.scrollTo(0,0); }
+
+function startGame(pool=QUESTIONS, practice=false, mp=null){
+  if(!mp) mpLeave();
+  S = { botLevel:cfg.botLevel, gold:0, streak:0, right:0, total:0, over:false, missed:new Map(), topics:{},
+        deck:shuffle(pool), pool, practice, idx:0, mp,
+        timeLeft: mp && mp.endsAt ? Math.max(0,Math.round((mp.endsAt-Date.now())/1000)) : Math.round(cfg.minutes*60),
+        bots: mp ? [] : shuffle(BOT_POOL).slice(0,cfg.bots).map(([e,n])=>({emoji:e,name:n,gold:0,skill:0.75+Math.random()*0.45})) };
+  // bots scale with the goal so long races stay close
+  S.botScale = cfg.mode==="race" ? Math.max(1, cfg.goal/1000) : 1;
+  refreshMyAvatar(); $("mePet").innerHTML = avatarHTML(meAv());
+  $("bar").classList.remove("hidden");
+  clearInterval(botTimer); clearInterval(clockTimer);
+  if(S.bots.length) botTimer = setInterval(botTick, 3000);
+  if(cfg.mode==="time") clockTimer = setInterval(clockTick, 1000);
+  renderRace(); ask();
+}
+
+function clockTick(){
+  if(S.over) return;
+  if(S.mp && S.mp.endsAt) S.timeLeft=Math.max(0,Math.round((S.mp.endsAt-Date.now())/1000));
+  else if(S.paused) return;
+  else S.timeLeft--;
+  renderGoalLine();
+  if(S.timeLeft<=0) finish();
+}
+
+function botTick(){
+  if(S.over || S.paused) return;
+  const L=BOT_LEVELS[S.botLevel] || BOT_LEVELS.normal;
+  S.bots.forEach(b=>{
+    const r=Math.random();
+    if(r<L.miss) return;
+    if(r<L.miss+L.spill){ b.gold=Math.round(b.gold*0.8); return; }
+    if(L.steal && S.gold>40 && Math.random()<L.steal){
+      const take=Math.round(S.gold*0.12); S.gold-=take; b.gold+=take;
+      toast(`${b.name} stole ${fmt(take)} gold from you!`); return;
+    }
+    b.gold += Math.round(rand(8,30)*b.skill*S.botScale*L.speed);
+  });
+  renderRace(); checkWin();
+}
+
+function renderGoalLine(){
+  const el=$("meGoal");
+  if(cfg.mode==="race"){ el.textContent=`gold · first to ${fmt(cfg.goal)}`; el.classList.remove("low"); }
+  else { const m=Math.floor(Math.max(0,S.timeLeft)/60), s=String(Math.max(0,S.timeLeft)%60).padStart(2,"0");
+    el.textContent=`gold · ${m}:${s} left`; el.classList.toggle("low", S.timeLeft<=30); }
+}
+
+function renderRace(){
+  $("meGold").textContent = fmt(S.gold);
+  if(!S.hist) S.hist=[];
+  { const lead=opps().reduce((m,o)=>Math.max(m,o.gold),0), lp=S.hist[S.hist.length-1];
+    if(!lp || lp.y!==S.gold || lp.l!==lead){ S.hist.push({x:S.total, y:S.gold, l:lead}); if(S.hist.length>800) S.hist.splice(1,1); } }
+  renderGoalLine();
+  if(S.mp && MP && MP.gr && S.gold!==MP.sentGold){ MP.sentGold=S.gold; MP.gr.presence({gold:S.gold}).catch(()=>{}); }
+  const all=[{...meAv(),name:"You",gold:S.gold,you:true},...opps()].sort((a,b)=>b.gold-a.gold);
+  let rows=all.slice(0,6); if(!rows.some(r=>r.you)) rows=[...all.slice(0,5), all.find(r=>r.you)];
+  const scale = cfg.mode==="race" ? cfg.goal : Math.max(100, all[0].gold);
+  $("race").innerHTML = rows.map(r=>`<div class="lane${r.you?" you":""}"><span title="${esc(r.name)}">${avatarHTML(r)}</span><div class="track"><i style="width:${Math.min(100,r.gold/scale*100)}%"></i></div><span>${fmt(r.gold)}</span></div>`).join("");
+}
+
+function ask(){
+  if(S.over) return;
+  if(S.idx>=S.deck.length){ S.deck=shuffle(S.pool); S.idx=0; }
+  const item=S.deck[S.idx++]; S.current=item;
+  $("qNum").textContent=`${S.practice?"Missed-question round: ":""}Question ${S.total+1}`;
+  $("qTopic").textContent=item.t;
+  $("qStreak").textContent=S.streak>=2?`🔥 ${S.streak} in a row`:"";
+  $("qText").textContent=item.q;
+  $("wrongPanel").classList.add("hidden");
+  resetHint();
+  const box=$("answers"); box.innerHTML=""; box.classList.remove("locked");
+  shuffle(item.a).forEach(opt=>{ const b=document.createElement("button"); b.textContent=opt; b.onclick=()=>answer(opt,b); box.appendChild(b); });
+  show("sQ");
+}
+
+function answer(opt, btn){
+  if(S.over) return;
+  const item=S.current, correct=item.a[0];
+  S.total++;
+  const tp = S.topics[item.t] || (S.topics[item.t]={right:0,total:0});
+  tp.total++;
+  stopHint();
+  $("answers").classList.add("locked");
+  [...$("answers").children].forEach(b=>{ if(b!==btn) b.classList.add("dim"); });
+  if(opt===correct){
+    S.right++; S.streak++; tp.right++; S.best=Math.max(S.best||0, S.streak);
+    setTimeout(openFlasks, 250);
+  } else {
+    S.streak=0; S.missed.set(item.q,item);
+    allMissed.set(item.q,item); studied=false; saveMissed();
+    // bring the missed question back in a few turns
+    S.deck.splice(Math.min(S.deck.length, S.idx+rand(3,5)), 0, item);
+    $("wAns").textContent=correct; $("wWhy").textContent=item.why;
+    S.lastPick=opt; resetExplain();
+    [...$("answers").children].forEach(b=>{ if(b.textContent===correct){ b.classList.remove("dim"); b.classList.add("right"); } });
+    btn.classList.add("picked");
+    const wp=$("wrongPanel"); wp.classList.remove("hidden");
+    lockNext(3);
+    setTimeout(()=>{ try{ wp.scrollIntoView({behavior:"smooth",block:"nearest"}); }catch(e){} $("nextBtn").focus({preventScroll:true}); }, 200);
+  }
+}
+
+function flaskSVG(color,id){
+  return `<svg viewBox="0 0 100 100" aria-hidden="true">
+    <rect x="14" y="42" width="72" height="50" rx="6" fill="${color}"/>
+    <rect x="8" y="30" width="84" height="16" rx="5" fill="${color}"/>
+    <rect x="8" y="30" width="84" height="16" rx="5" fill="#000" opacity=".12"/>
+    <rect x="44" y="30" width="12" height="62" fill="#fff" opacity=".9"/>
+    <path d="M50 30 C42 12 26 12 30 23 C33 30 44 30 50 30 C56 30 67 30 70 23 C74 12 58 12 50 30Z" fill="#fff" opacity=".9"/>
+    <text x="50" y="76" text-anchor="middle" font-size="22" font-weight="800" fill="#fff" opacity=".85">?</text></svg>`;
+}
+
+function rollOutcome(){
+  const r=Math.random()*100, bonus=Math.min(S.streak-1,5)*5, k=cfg.mode==="race"?Math.max(1,cfg.goal/1000):1;
+  if(r<36){ const n=Math.round((rand(15,45)+bonus)*k); return {label:`+${fmt(n)}`,sub:"gold",tone:"good",apply:()=>{S.gold+=n}}; }
+  if(r<50){ const n=Math.round((rand(60,110)+bonus)*k); return {label:`+${fmt(n)}`,sub:"big find",tone:"big",apply:()=>{S.gold+=n}}; }
+  if(r<57) return {label:"×2",sub:"gold doubled",tone:"big",apply:()=>{S.gold*=2}};
+  if(r<64) return {label:"+50%",sub:"¡Olé! bonus",tone:"good",apply:()=>{S.gold=Math.round(S.gold*1.5)}};
+  if(r<75) return {label:"−25%",sub:"¡Ay! lost some",tone:"bad",apply:()=>{S.gold=Math.round(S.gold*0.75)}};
+  if(r<83) return {label:"Empty",sub:"nothing inside",tone:"",apply:()=>{}};
+  if(!opps().length){ const n=Math.round((rand(40,90)+bonus)*k); return {label:`+${fmt(n)}`,sub:"lucky find",tone:"big",apply:()=>{S.gold+=n}}; }
+  if(r<95) return {label:"Steal",sub:"pick a player",tone:"big",choose:"steal"};
+  return {label:"Swap",sub:"trade gold with anyone",tone:"big",choose:"swap"};
+}
+
+function openFlasks(){
+  $("fTitle").textContent = S.streak>=3 ? `Correct! 🔥 ${S.streak} streak` : "Correct!";
+  $("fSub").textContent="Pick a box.";
+  $("chooser").classList.add("hidden");
+  const colors=["#4C6FFF","#12A38F","#E14B5A"], outs=[rollOutcome(),rollOutcome(),rollOutcome()];
+  const box=$("flasks"); box.innerHTML=""; box.classList.remove("locked");
+  outs.forEach((o,i)=>{
+    const b=document.createElement("button"); b.className="flask"; b.setAttribute("aria-label",`Box ${i+1}`);
+    b.innerHTML=flaskSVG(colors[i], i+"_"+S.total)+`<div class="out"></div>`;
+    b.onclick=()=>pick(i,outs); box.appendChild(b);
+  });
+  show("sFlask");
+}
+
+function pick(i,outs){
+  if(S.over) return;
+  const box=$("flasks"); box.classList.add("locked");
+  [...box.children].forEach((b,j)=>{
+    const o=outs[j], out=b.querySelector(".out");
+    out.className="out "+o.tone; out.innerHTML=`${o.label}<small>${o.sub}</small>`;
+    b.classList.add(j===i?"opened":"other");
+  });
+  const o=outs[i];
+  if(o.choose){ openChooser(o.choose); return; }
+  o.apply(); renderRace();
+  if(checkWin()) return;
+  setTimeout(ask, 1400);
+}
+
+function openChooser(kind){
+  const box=$("targets"); box.innerHTML="";
+  $("chTitle").textContent = kind==="steal" ? "Who do you want to steal 20% from?" : "Who do you want to swap gold with?";
+  [...opps()].sort((a,b)=>b.gold-a.gold).forEach(bot=>{
+    const take=Math.round(bot.gold*0.2);
+    const b=document.createElement("button");
+    b.innerHTML = `<span class="em">${avatarHTML(bot)}</span>${esc(bot.name)}<small>has <b>${fmt(bot.gold)}</b> gold</small><small>${
+      kind==="steal" ? `you’d get +${fmt(take)}` : `you’d go ${fmt(S.gold)} → ${fmt(bot.gold)}`}</small>`;
+    b.onclick=()=>{
+      if(S.over) return;
+      if(kind==="steal"){ S.gold+=take; if(bot.peer) sendTx({k:"s",to:bot.peer,a:take}); else bot.gold-=take; $("fSub").textContent=`You stole ${fmt(take)} gold from ${bot.name}!`; }
+      else { const mine=S.gold; S.gold=bot.gold; if(bot.peer) sendTx({k:"w",to:bot.peer,g:mine}); else bot.gold=mine; $("fSub").textContent=`You swapped gold with ${bot.name}!`; }
+      $("chooser").classList.add("hidden"); renderRace();
+      if(checkWin()) return;
+      setTimeout(ask, 1300);
+    };
+    box.appendChild(b);
+  });
+  $("fSub").textContent = kind==="steal" ? "Steal! Choose your target." : "Swap! Choose who to trade with.";
+  $("chooser").classList.remove("hidden");
+  box.firstChild.focus();
+}
+
+function checkWin(){
+  if(S.over) return true;
+  if(cfg.mode!=="race") return false;
+  if(![S.gold,...opps().map(b=>b.gold)].some(g=>g>=cfg.goal)) return false;
+  finish(); return true;
+}
+
+function finish(){
+  if(S.over) return;
+  S.over=true; clearInterval(botTimer); clearInterval(clockTimer);
+  setTimeout(endGame, 800);
+}
+
+function endGame(){
+  if(S.quit) return;
+  if(MP && MP.role==="host" && MP.doc) MP.doc.update({status:"done"}).catch(()=>{});
+  const rows=[{you:true,gold:S.gold},...opps()].sort((a,b)=>b.gold-a.gold);
+  const place=rows.findIndex(r=>r.you)+1;
+  $("ePodium").innerHTML = place===1?"🏆":place===2?"🥈":place===3?"🥉":avatarHTML(meAv());
+  $("eTitle").textContent = place===1 ? (cfg.mode==="time"?"Time’s up. You won!":"You won!") : (cfg.mode==="time"?`Time’s up. You placed #${place}`:`You placed #${place}`);
+  if(!S.mp && !S.bots.length){
+    const hit = cfg.mode==="race" && S.gold>=cfg.goal;
+    $("eTitle").textContent = cfg.mode==="time" ? "Time’s up!" : (hit ? `You hit ${fmt(cfg.goal)} gold!` : "Round over");
+    $("ePodium").innerHTML = (hit || cfg.mode==="time") ? "⭐" : avatarHTML(meAv());
+  }
+  const acc=S.total?Math.round(S.right/S.total*100):0;
+  $("eChart").innerHTML=goldChartSVG();
+  $("eStats").innerHTML=`<div><b>${fmt(S.gold)}</b>gold</div><div><b>${acc}%</b>accuracy</div><div><b>${S.right}/${S.total}</b>correct</div>`;
+  const tps=Object.keys(S.topics);
+  $("eTopics").innerHTML = tps.length ? tps.map(t=>{ const d=S.topics[t], p=Math.round(d.right/d.total*100);
+    return `<div class="topic${p<70?" weak":""}"><span>${esc(t)}</span><div class="track"><i style="width:${p}%"></i></div><span>${d.right}/${d.total}</span></div>`; }).join("")
+    : `<p class="muted">Answer a few questions to see your topic breakdown.</p>`;
+  const missed=[...S.missed.values()];
+  lastMissed=missed;
+  $("missBtn").classList.toggle("hidden", missed.length===0);
+  $("missBtn").textContent=`Replay my ${missed.length} missed question${missed.length===1?"":"s"}`;
+  refreshStudyButtons();
+  $("eMissWrap").classList.toggle("hidden", missed.length===0);
+  $("eMissed").innerHTML=missed.map(m=>`<div><p style="margin-bottom:4px">${esc(m.q)}</p><p style="margin-bottom:4px"><b>${esc(m.a[0])}</b></p><p class="muted" style="margin:0">${esc(m.why)}</p></div>`).join("");
+  show("sEnd");
+}
+
+// ---- Study mode: every question missed in any round (kept in this browser) ----
+const allMissed = new Map();
+try{ const raw=localStorage.getItem("rr-missed"); if(raw) JSON.parse(raw).forEach(m=>{ if(m && typeof m.q==="string" && Array.isArray(m.a)) allMissed.set(m.q,m); }); }catch(e){}
+function saveMissed(){ try{ localStorage.setItem("rr-missed", JSON.stringify([...allMissed.values()])); localStorage.setItem("rr-studied", studied?"1":"0"); }catch(e){} }
+let studied=false;
+try{ studied = localStorage.getItem("rr-studied")==="1"; }catch(e){}
+function refreshStudyButtons(){
+  const n=allMissed.size;
+  $("studyBtn").textContent=`Study all my missed questions (${n})`;
+  $("studyBtn").classList.toggle("hidden", n===0);
+}
+let study=null;
+function openStudy(){
+  studied=true; saveMissed();
+  study={queue:shuffle([...allMissed.values()]), done:0, total:allMissed.size};
+  $("bar").classList.add("hidden"); show("sStudy"); nextCard();
+}
+function nextCard(){
+  const left=study.queue.length;
+  $("stDone").classList.toggle("hidden", left>0);
+  $("stCard").classList.toggle("hidden", left===0);
+  $("stPlayBtn").classList.toggle("hidden", allMissed.size===0);
+  $("stProg").textContent=`${study.done} of ${study.total} learned`;
+  if(!left){ $("stTopic").textContent=""; refreshStudyButtons(); return; }
+  const c=study.queue[0];
+  $("stTopic").textContent=c.t||"";
+  $("stQ").textContent=c.q;
+  $("stA").textContent=c.a[0];
+  $("stWhy").textContent=c.why||"";
+  $("stBack").classList.add("hidden"); $("revealBtn").classList.remove("hidden"); $("revealBtn").focus();
+}
+$("revealBtn").onclick=()=>{ $("revealBtn").classList.add("hidden"); $("stBack").classList.remove("hidden"); $("knewBtn").focus(); };
+$("knewBtn").onclick=()=>{ const c=study.queue.shift(); allMissed.delete(c.q); saveMissed(); study.done++; nextCard(); };
+$("stillBtn").onclick=()=>{ study.queue.push(study.queue.shift()); nextCard(); };
+$("stPlayBtn").onclick=()=>startGame([...allMissed.values()], true);
+$("stHomeBtn").onclick=()=>{ refreshStudyButtons(); show("sStart"); };
+$("studyBtn").onclick=openStudy;
+refreshStudyButtons();
+
+// Quit mid-game
+function closeQuit(){ $("quitBox").classList.add("hidden"); $("progCard").classList.add("hidden"); $("quitCard").classList.remove("hidden"); }
+
+// ---------- Progress & charts ----------
+function goldChartSVG(){
+  const h=(S && S.hist) || [];
+  if(h.length<2) return `<p class="muted">Answer a few questions to see your gold chart.</p>`;
+  const hasOpp=h.some(p=>p.l>0);
+  const W=640,H=230,P={l:52,r:14,t:14,b:34};
+  const maxX=Math.max(1, h[h.length-1].x);
+  const maxY=Math.max(100, ...h.map(p=>Math.max(p.y,p.l||0)), cfg.mode==="race" ? cfg.goal : 0);
+  const X=x=>P.l+(x/maxX)*(W-P.l-P.r), Y=y=>H-P.b-(y/maxY)*(H-P.t-P.b);
+  const line=k=>h.map((p,i)=>`${i?"L":"M"}${X(p.x).toFixed(1)},${Y(p[k]||0).toFixed(1)}`).join("");
+  const grid=[0,0.5,1].map(f=>{ const v=Math.round(maxY*f), y=Y(v).toFixed(1);
+    return `<line x1="${P.l}" x2="${W-P.r}" y1="${y}" y2="${y}" style="stroke:var(--line)" stroke-width="1.5"/><text x="${P.l-8}" y="${(+y+4).toFixed(1)}" text-anchor="end">${fmt(v)}</text>`; }).join("");
+  const goal = cfg.mode==="race" ? `<line x1="${P.l}" x2="${W-P.r}" y1="${Y(cfg.goal).toFixed(1)}" y2="${Y(cfg.goal).toFixed(1)}" style="stroke:var(--teal)" stroke-width="2" stroke-dasharray="6 5"/>` : "";
+  const svg=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Gold over time">${grid}${goal}
+    ${hasOpp?`<path d="${line("l")}" fill="none" style="stroke:var(--muted)" stroke-width="2.5" stroke-dasharray="4 4" stroke-linejoin="round"/>`:""}
+    <path d="${line("y")}" fill="none" style="stroke:var(--gold)" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
+    <text x="${P.l}" y="${H-8}">0</text><text x="${W-P.r}" y="${H-8}" text-anchor="end">${maxX} questions</text></svg>`;
+  const legend=`<div class="legend"><span><i style="background:var(--gold)"></i>You</span>${hasOpp?`<span><i style="background:var(--muted)"></i>Leader</span>`:""}${cfg.mode==="race"?`<span><i style="background:var(--teal)"></i>Goal (${fmt(cfg.goal)})</span>`:""}</div>`;
+  return svg+legend;
+}
+function renderProgress(){
+  const acc=S.total?Math.round(S.right/S.total*100):0;
+  $("pStats").innerHTML=`<div><b>${fmt(S.gold)}</b>gold</div><div><b>${acc}%</b>accuracy</div><div><b>${S.right}/${S.total}</b>correct</div><div><b>${S.best||0}</b>best streak</div><div><b>${S.missed.size}</b>missed</div>`;
+  $("pChart").innerHTML=goldChartSVG();
+  const rows=[{you:true,...meAv(),name:"You",gold:S.gold},...opps()].sort((a,b)=>b.gold-a.gold);
+  const box=$("pStand"); box.innerHTML="";
+  if(rows.length<2){ box.innerHTML=`<p class="muted">Just you this game.</p>`; }
+  else rows.forEach((r,i)=>{ const d=document.createElement("div"); if(r.you) d.className="you";
+    const a=document.createElement("span"); a.innerHTML=`${i+1}. ${avatarHTML(r)} ${esc(r.name)}`;
+    const b=document.createElement("span"); b.textContent=fmt(r.gold); d.append(a,b); box.appendChild(d); });
+  const tps=Object.keys(S.topics);
+  $("pTopics").innerHTML = tps.length ? tps.map(t=>{ const d=S.topics[t], p=Math.round(d.right/d.total*100);
+    return `<div class="topic${p<70?" weak":""}"><span>${esc(t)}</span><div class="track"><i style="width:${p}%"></i></div><span>${d.right}/${d.total}</span></div>`; }).join("")
+    : `<p class="muted">Answer a few questions to see your topics.</p>`;
+}
+$("progBtn").onclick=()=>{ renderProgress(); $("quitCard").classList.add("hidden"); $("progCard").classList.remove("hidden"); $("pKeep").focus(); };
+$("pBack").onclick=()=>{ $("progCard").classList.add("hidden"); $("quitCard").classList.remove("hidden"); $("keepBtn").focus(); };
+$("pKeep").onclick=()=>$("keepBtn").click();
+$("quitBtn").onclick=()=>{ if(!S || S.over) return; S.paused=true; $("quitBox").classList.remove("hidden"); $("keepBtn").focus(); };
+$("keepBtn").onclick=()=>{ S.paused=false; closeQuit(); };
+$("leaveBtn").onclick=()=>{
+  closeQuit(); S.over=true; S.quit=true; S.paused=false;
+  clearInterval(botTimer); clearInterval(clockTimer); mpLeave();
+  $("bar").classList.add("hidden"); refreshStudyButtons(); show("sStart");
+};
+$("leaveResultsBtn").onclick=()=>{
+  closeQuit(); S.paused=false; if(S.over) return;
+  S.over=true; clearInterval(botTimer); clearInterval(clockTimer); endGame();
+};
+document.addEventListener("keydown",e=>{ if(e.key==="Escape" && !$("quitBox").classList.contains("hidden")) $("keepBtn").click(); });
+
+// ---------- Hints (solo games) ----------
+let hintCtl=null;
+function stopHint(){
+  if(hintCtl){ hintCtl.abort(); hintCtl=null; }
+  $("hintBtn").classList.add("hidden");
+}
+function resetHint(){
+  if(hintCtl){ hintCtl.abort(); hintCtl=null; }
+  const b=$("hintBtn"); b.disabled=false; b.textContent="💡 Hint";
+  b.classList.toggle("hidden", !!(S && S.mp));
+  $("hintText").textContent=""; $("hintText").classList.add("hidden");
+}
+function showHint(t){ const h=$("hintText"); h.textContent=t; h.classList.remove("hidden"); }
+function fiftyFifty(){
+  const item=S.current, correct=item.a[0];
+  const wrong=shuffle([...$("answers").children].filter(b=>b.textContent!==correct)).slice(0,2);
+  wrong.forEach(b=>b.classList.add("gone"));
+  showHint("Two wrong answers were removed.");
+}
+async function getHint(){
+  const item=S && S.current; if(!item || hintCtl) return;
+  const b=$("hintBtn"); b.disabled=true; b.textContent="Thinking…";
+  const sample=await samplePromise;
+  if(!sample){ fiftyFifty(); b.classList.add("hidden"); return; }
+  const ctl=new AbortController(); hintCtl=ctl;
+  const prompt=`Give a hint for this multiple-choice question for a high school student. One sentence, under 25 words. Help them think it through (the rule, a clue, or a related word) but do NOT give away the answer, name or quote the correct choice, or rule choices in or out by name. Plain text only.
+
+Question: ${item.q}
+Choices: ${item.a.join(" | ")}
+Correct answer (keep secret): ${item.a[0]}`;
+  try{
+    const r=await sample(prompt,{signal:ctl.signal, modelTier:"quick", onText:({text})=>{ if(hintCtl===ctl && text) showHint(text); }});
+    if(hintCtl!==ctl) return;
+    showHint(r.text || "Think about the rule behind this one.");
+    b.classList.add("hidden");
+  }catch(e){
+    if(hintCtl!==ctl || (e && e.code==="cancelled")) return;
+    fiftyFifty(); b.classList.add("hidden");
+  }finally{ if(hintCtl===ctl) hintCtl=null; }
+}
+$("hintBtn").onclick=getHint;
+
+// ---------- Explain a missed question (solo games) ----------
+let exCtl=null, exHist=[];
+function exMsg(m){ $("exMsg").textContent=m; $("exMsg").classList.toggle("hidden", !m); }
+function resetExplain(){
+  if(exCtl){ exCtl.abort(); exCtl=null; }
+  exHist=[];
+  $("exText").innerHTML=""; $("exText").classList.add("hidden"); exMsg("");
+  $("followRow").classList.add("hidden"); $("followIn").value=""; $("followIn").disabled=false; $("followBtn").disabled=false;
+  const b=$("explainBtn"); b.disabled=false; b.textContent="🤖 Explain it to me";
+  b.classList.toggle("hidden", !!(S && S.mp) || !canMake);
+}
+function addLine(cls,text){ const p=document.createElement("p"); if(cls) p.className=cls; p.textContent=text; $("exText").appendChild(p); return p; }
+function setAsking(on){
+  $("followBtn").disabled=on; $("followIn").disabled=on;
+  const b=$("explainBtn"); b.disabled=on; b.textContent = on ? "Explaining…" : "🤖 Explain it to me";
+}
+const EX_ERR={ not_granted:"Claude access wasn’t allowed, so explanations are off. Reload the page to be asked again.",
+  sampling_disabled:"Claude isn’t available for this account, so explanations are off.",
+  rate_limited:"Too many requests right now. Wait a minute, then try again.",
+  session_expired:"Sign in to Claude again, then try again.",
+  refused:"Claude couldn’t answer that one. Try asking another way." };
+function firstPrompt(){
+  const item=S.current;
+  return `You are a friendly tutor helping a high school student review for a test. They got this multiple-choice question wrong.
+
+Question: ${item.q}
+Choices: ${item.a.join(" | ")}
+They picked: ${S.lastPick}
+Correct answer: ${item.a[0]}
+Note from the answer key: ${item.why}
+
+Explain in 2 or 3 short sentences (under 60 words): why the correct answer is right and why their pick is wrong. If the subject is a language, you may add one tiny example with an English translation.
+They may then ask follow-up questions. Answer each one in 1 to 3 short sentences, stay on this topic, and keep it simple.
+Always use plain text only: no markdown, headings, bold, or lists.`;
+}
+async function askClaude(text, isFirst){
+  if(!S || !S.current) return;
+  const sample=await samplePromise;
+  if(!sample){ $("explainBtn").classList.add("hidden"); exMsg("Explanations only work when Study Quest is opened in Claude."); return; }
+  const ctl=new AbortController(); exCtl=ctl;
+  const box=$("exText"); box.classList.remove("hidden"); exMsg("");
+  const youLine = isFirst ? null : addLine("you", "You: "+text);
+  const out=addLine("", "Thinking…");
+  exHist.push({role:"user", content:text});
+  setAsking(true);
+  try{
+    const r=await sample(exHist.slice(), {signal:ctl.signal, onText:({text:t})=>{ if(exCtl===ctl && t) out.textContent=t; }});
+    if(exCtl!==ctl) return;
+    out.textContent = r.text || out.textContent;
+    exHist.push({role:"assistant", content:out.textContent});
+    $("explainBtn").classList.add("hidden");
+    $("followRow").classList.remove("hidden");
+  }catch(e){
+    if(exCtl!==ctl || (e && e.code==="cancelled")) return;
+    exHist.pop(); out.remove(); if(youLine) youLine.remove();
+    if(!box.children.length) box.classList.add("hidden");
+    exMsg((e && EX_ERR[e.code]) || "Couldn’t get an answer. Try again.");
+    if(e && (e.code==="not_granted" || e.code==="sampling_disabled")){ $("explainBtn").classList.add("hidden"); $("followRow").classList.add("hidden"); }
+  }finally{
+    if(exCtl===ctl){ exCtl=null; setAsking(false); }
+  }
+}
+$("explainBtn").onclick=()=>askClaude(firstPrompt(), true);
+function sendFollow(){
+  const q=$("followIn").value.trim().slice(0,300);
+  if(!q || exCtl) return;
+  $("followIn").value=""; askClaude(q, false);
+}
+$("followBtn").onclick=sendFollow;
+$("followIn").addEventListener("keydown", e=>{ if(e.key==="Enter"){ e.preventDefault(); sendFollow(); } });
+
+// ---------- Play with friends (game code) ----------
+const roomP = window.claude ? claude.use("room") : Promise.resolve(null);
+const dbP = window.claude ? claude.use("db") : Promise.resolve(null);
+const CODE_CHARS="ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+let MP=null;
+function toast(m){ const t=$("toast"); t.textContent=m; t.classList.remove("hidden"); clearTimeout(toast.t); toast.t=setTimeout(()=>t.classList.add("hidden"),3200); }
+function opps(){ return (S && S.mp) ? mpOpponents() : (S ? S.bots : []); }
+function mpOpponents(){
+  if(!MP || !MP.gr) return [];
+  return MP.gr.peers().filter(p=>!(p.isMe && p.sameTab) && p.presence && typeof p.presence.n==="string")
+    .map(p=>({ peer:p.peer, name:p.presence.n.slice(0,16)||"Player", emoji:String(p.presence.e||"🙂").slice(0,8), img:codeToImg(p.presence.av), px:true,
+      host:!!p.presence.h, gold:Math.max(0,Math.min(1e9,Math.round(Number(p.presence.gold)||0))) }));
+}
+function sendTx(t){
+  if(!MP || !MP.gr) return;
+  t.i=Math.random().toString(36).slice(2,10);
+  MP.tx=[...MP.tx, t].slice(-6); MP.sentGold=S.gold;
+  MP.gr.presence({tx:MP.tx, gold:S.gold}).catch(()=>{});
+}
+function onPeersChange(){
+  if(!MP || !MP.gr) return;
+  const me=MP.gr.peers().find(p=>p.isMe && p.sameTab); if(me) MP.myPeer=me.peer;
+  if(S && S.mp && !S.over && MP.myPeer){
+    MP.gr.peers().forEach(p=>{
+      if((p.isMe && p.sameTab) || !p.presence) return;
+      const tx=Array.isArray(p.presence.tx) ? p.presence.tx : [];
+      tx.forEach(t=>{
+        if(!t || t.to!==MP.myPeer || typeof t.i!=="string") return;
+        const key=p.peer+":"+t.i; if(MP.applied.has(key)) return; MP.applied.add(key);
+        const who=(typeof p.presence.n==="string" && p.presence.n.slice(0,16)) || "Someone";
+        if(t.k==="s"){ const a=Math.max(0,Math.round(Number(t.a)||0)); S.gold=Math.max(0,S.gold-a); toast(`${who} stole ${fmt(a)} gold from you!`); }
+        else if(t.k==="w"){ S.gold=Math.max(0,Math.min(1e9,Math.round(Number(t.g)||0))); toast(`${who} swapped gold with you!`); }
+      });
+    });
+  }
+  if(S && S.mp){ renderRace(); checkWin(); } else renderLobby();
+}
+function renderLobby(){
+  if(!MP) return;
+  const list=[{name:MP.nick+" (you)", ...meAv(), host:MP.role==="host"}, ...mpOpponents()];
+  const box=$("lbPlayers"); box.innerHTML="";
+  list.forEach(p=>{ const d=document.createElement("div"); d.innerHTML=`${avatarHTML(p)} ${esc(p.name)}${p.host && !p.name.endsWith("(you)")?" (host)":""}`; box.appendChild(d); });
+  if(MP.role==="host"){
+    const n=list.length-1;
+    $("lbMsg").textContent = n ? `${n} friend${n>1?"s":""} joined. Start when everyone’s in.` : "Tell your friends to pick “Join with a code” and type this code.";
+  }
+}
+function mpErr(e){
+  const c=e && e.code;
+  if(c==="no_room") return "Playing with friends only works when Study Quest is opened in Claude, and each friend needs a Claude account with access to this page.";
+  if(c==="timeout" || c==="upstream_error") return "Couldn’t reach the game. Check your connection and try again.";
+  if(c==="permission_denied" || c==="not_permitted" || c==="forbidden" || c==="not_granted") return "Only people who can edit this page can host. Ask the owner to host, then join with the code.";
+  if(c==="limit_reached") return "Too many games open right now. Close one and try again.";
+  return "Something went wrong. Try again.";
+}
+function getNick(){
+  const n=$("nickIn").value.trim().slice(0,16);
+  if(!n){ $("startMsg").textContent="Type your name first."; $("nickIn").focus(); return null; }
+  try{ localStorage.setItem("sq-nick", n); }catch(e){}
+  return n;
+}
+function setBusy(on,msg){ $("startBtn").disabled=on; if(msg!==undefined) $("startMsg").textContent=msg; }
+async function hostGame(pool){
+  const nick=getNick(); if(!nick) return;
+  setBusy(true,"Creating your game…");
+  try{
+    const [room,db]=await Promise.all([roomP, dbP]);
+    if(!room || !db) throw {code:"no_room"};
+    const code=Array.from({length:5},()=>CODE_CHARS[Math.floor(Math.random()*CODE_CHARS.length)]).join("");
+    const set=currentSet();
+    const doc=db.doc("games/"+code);
+    await withTimeout(doc.set({code, status:"lobby", mode:cfg.mode, goal:cfg.goal, minutes:cfg.minutes,
+      title:(set?set.title:"Questions").slice(0,80), questions:pool.slice(0,150), created:Date.now()}),10000);
+    await enterLobby(code,"host",nick,doc,room);
+    $("startMsg").textContent="";
+  }catch(e){ $("startMsg").textContent=mpErr(e); }
+  finally{ setBusy(false); }
+}
+async function joinGame(){
+  const nick=getNick(); if(!nick) return;
+  const code=$("codeIn").value.trim().toUpperCase().replace(/[^A-Z0-9]/g,"");
+  if(code.length!==5){ $("startMsg").textContent="Type the 5-character code your friend gave you."; $("codeIn").focus(); return; }
+  setBusy(true,"Joining…");
+  try{
+    const [room,db]=await Promise.all([roomP, dbP]);
+    if(!room || !db) throw {code:"no_room"};
+    const doc=db.doc("games/"+code);
+    const snap=await withTimeout(doc.get(),10000);
+    if(!snap.exists){ $("startMsg").textContent="No game with that code. Check it and try again."; return; }
+    if(snap.data().status==="done"){ $("startMsg").textContent="That game already ended. Ask your friend for a new code."; return; }
+    await enterLobby(code,"join",nick,doc,room);
+    $("startMsg").textContent="";
+  }catch(e){ $("startMsg").textContent=mpErr(e); }
+  finally{ setBusy(false); }
+}
+async function enterLobby(code,role,nick,doc,room){
+  mpLeave();
+  const gr=await withTimeout(room.join("sq-"+code.toLowerCase()),12000);
+  MP={role, code, nick, gr, doc, applied:new Set(), tx:[], sentGold:0, game:null, started:false};
+  refreshMyAvatar();
+  await gr.presence({n:nick, e:"🙂", av:avatarCode(), gold:0, h:role==="host"?1:0, tx:[]});
+  MP.unsubPeers=gr.onPeers(()=>onPeersChange(), ()=>toast("Lost connection to the game."));
+  MP.unsubDoc=doc.onSnapshot(snap=>onGameDoc(snap), ()=>{ $("lbMsg").textContent="Lost connection to the game. Leave and join again."; });
+  $("lbRole").textContent = role==="host" ? "Your game code. Share it with your friends:" : "You’re in game";
+  $("lbCode").textContent=code;
+  $("lbStart").classList.toggle("hidden", role!=="host");
+  $("lbMsg").textContent = role==="host" ? "Tell your friends to pick “Join with a code” and type this code." : "Waiting for the host to start…";
+  show("sLobby"); renderLobby();
+}
+function onGameDoc(snap){
+  if(!MP || !snap.exists) return;
+  const g=snap.data(); MP.game=g;
+  $("lbInfo").textContent = `${String(g.title||"Questions")} · ${g.mode==="time" ? `${g.minutes} minute timer` : `race to ${fmt(Number(g.goal)||1000)} gold`}`;
+  if(g.status==="playing" && !MP.started){
+    MP.started=true;
+    cfg.mode = g.mode==="time" ? "time" : "race";
+    cfg.goal = Math.max(100, Math.round(Number(g.goal)||1000));
+    cfg.minutes = Math.max(1, Number(g.minutes)||5);
+    const qs=cleanSet({questions:g.questions},200);
+    if(!qs.length){ $("lbMsg").textContent="This game has no questions."; return; }
+    startGame(qs,false,{endsAt: Number(g.endsAt)||null});
+  }
+}
+function mpLeave(){
+  if(!MP) return;
+  const m=MP; MP=null;
+  try{ m.unsubPeers && m.unsubPeers(); }catch(e){}
+  try{ m.unsubDoc && m.unsubDoc(); }catch(e){}
+  if(m.role==="host" && m.doc) m.doc.update({status:"done"}).catch(()=>{});
+  m.gr.leave().catch(()=>{});
+}
+$("lbStart").onclick=async()=>{
+  if(!MP || !MP.game) return;
+  $("lbStart").disabled=true;
+  try{
+    const g=MP.game;
+    await MP.doc.update({status:"playing", startedAt:Date.now(), endsAt: g.mode==="time" ? Date.now()+Math.round(Number(g.minutes)*60000) : null});
+  }catch(e){ $("lbMsg").textContent="Couldn’t start the game. Try again."; }
+  finally{ $("lbStart").disabled=false; }
+};
+$("lbLeave").onclick=()=>{ mpLeave(); show("sStart"); };
+
+$("startBtn").onclick=()=>{
+  if(cfg.play==="join"){ joinGame(); return; }
+  if(selectedId==="vamos" && !making){
+    if(cfg.play!=="solo"){ $("startMsg").textContent="The Quiz Show is a one-player game. Pick “Just me” to play it."; return; }
+    $("startMsg").textContent=""; vamosStart(vamosMode); return;
+  }
+  const pool=activePool();
+  if(!pool){
+    if(making){ $("startMsg").textContent="Save your new set first, or tap a set in the library."; return; }
+    $("startMsg").textContent="Pick at least one topic to practice."; return; }
+  $("startMsg").textContent="";
+  if(cfg.play==="host") hostGame(pool); else startGame(pool);
+};
+$("missBtn").onclick=()=>startGame(lastMissed, true);
+// After a wrong answer, wait a few seconds before the next question
+function lockNext(sec){
+  const b=$("nextBtn"); clearInterval(lockNext.t); let n=sec;
+  b.disabled=true; b.textContent=`Next question (${n})`;
+  lockNext.t=setInterval(()=>{
+    n--;
+    if(n<=0){ clearInterval(lockNext.t); b.disabled=false; b.textContent="Next question"; if(S && !S.over) b.focus({preventScroll:true}); }
+    else b.textContent=`Next question (${n})`;
+  },1000);
+}
+$("nextBtn").onclick=()=>{ if($("nextBtn").disabled) return; if(exCtl){ exCtl.abort(); exCtl=null; } ask(); };
+$("againBtn").onclick=()=>{ mpLeave(); $("bar").classList.add("hidden"); show("sStart"); };
+$("againBtn").textContent="New game";
+
+// ================= ¡Vamos! Quiz Show (typed answers) =================
+(function(){
+
+// ---------------- helpers ----------------
+const $ = id => document.getElementById(id);
+const pick = a => a[Math.floor(Math.random()*a.length)];
+const shuffle = a => { a=[...a]; for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; };
+const esc = s => String(s).replace(/[&<>"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const noAcc = s => s.normalize("NFD").replace(/[\u0300-\u036f]/g,"");
+const normEs = s => s.toLowerCase().replace(/[¡!¿?.,;:"“”]/g," ").replace(/\s+/g," ").trim();
+const normEn = s => " "+s.toLowerCase().replace(/[^a-z\s']/g," ").replace(/\s+/g," ").trim()+" ";
+const has = (n, phrase) => n.includes(" "+phrase+" ");
+const stripArticle = n => n.replace(/^ (the|a|an) /," ");
+const cap = s => s.charAt(0).toUpperCase()+s.slice(1);
+
+// ---------------- 1. future tense ----------------
+const FUT_VERBS = [
+  ["estudiar","para el examen"],["hablar","con el profesor"],["comer","en la cafetería"],["vivir","en Madrid"],
+  ["escribir","una carta"],["leer","el libro"],["bailar","en la fiesta"],["cantar","en el concierto"],
+  ["trabajar","en el banco"],["viajar","a México"],["nadar","en la piscina"],["correr","en el parque"],
+  ["beber","jugo de naranja"],["mirar","la película"],["limpiar","la casa"],["comprar","zapatos en la zapatería"],
+  ["visitar","a los abuelos"],["aprender","español"],["jugar","al fútbol"],["abrir","la tienda"]
+];
+const FUT_SUBJ = [
+  {s:"Yo", e:"é", who:"yo"},
+  {s:"Tú", e:"ás", who:"tú"},
+  {s:"Ella", e:"á", who:"él / ella / usted"},{s:"Él", e:"á", who:"él / ella / usted"},{s:"Usted", e:"á", who:"él / ella / usted"},{s:"Mi hermano", e:"á", who:"él / ella / usted (one person)"},
+  {s:"Nosotros", e:"emos", who:"nosotros"},{s:"Mi amiga y yo", e:"emos", who:"nosotros (you + someone)"},
+  {s:"Ellos", e:"án", who:"ellos / ellas / ustedes"},{s:"Ustedes", e:"án", who:"ellos / ellas / ustedes"},{s:"Mis padres", e:"án", who:"ellos / ellas / ustedes (more than one person)"}
+];
+const TIMES = ["mañana","el sábado","la próxima semana","en el verano","esta noche"];
+function futureQ(ending){
+  const subjects = ending ? FUT_SUBJ.filter(x=>x.e===ending) : FUT_SUBJ;
+  const sj = pick(subjects), [inf, rest] = pick(FUT_VERBS), time = pick(TIMES);
+  const answer = inf + sj.e;
+  return {
+    topic:"future", key:sj.e,
+    html:`<div class="prompt">${esc(sj.s)} <span class="blank"></span> <span class="verb">(${esc(inf)})</span> ${esc(rest)} ${esc(time)}.</div>
+          <div class="sub">Type the verb in the future tense.</div>
+          <div class="tip">Remember: keep the whole infinitive and add the ending. Every ending except <b>-emos</b> has an accent: -é, -ás, -á, -án.</div>`,
+    accents:true,
+    check(raw){
+      const n = normEs(raw).split(" ").pop() || "";
+      const why = `${sj.who} → <b>-${sj.e}</b>. Keep the whole infinitive: ${esc(inf)} + ${sj.e} = <b>${esc(answer)}</b>.`;
+      if(n===answer) return {ok:true, msg:why};
+      if(noAcc(n)===noAcc(answer)) return {ok:false, close:true, msg:`Right verb, but it needs the accent: <b>${esc(answer)}</b>. ${sj.e==="emos"?"":"The ending -"+sj.e+" always has an accent."}`};
+      if(!noAcc(n).startsWith(inf)) return {ok:false, msg:`Keep the <b>whole</b> infinitive (${esc(inf)}) and add the ending. ${why}`};
+      return {ok:false, msg:`Wrong ending. ${why}`};
+    },
+    similar(){ return futureQ(sj.e); }
+  };
+}
+
+// ---------------- 2. tú commands ----------------
+const CMD_VERBS = [
+  ["mirar","la pizarra"],["hablar","con tu profesora"],["estudiar","para el examen"],["caminar","al parque"],
+  ["comer","las verduras"],["beber","agua"],["leer","el libro"],["escribir","la tarea"],["abrir","la puerta"],
+  ["limpiar","tu cuarto"],["escuchar","a tu mamá"],["correr","rápido"],["comprar","pan en la panadería"],
+  ["aprender","las palabras"],["subir","la escalera"],["compartir","tus papas fritas"],["doblar","a la derecha"],
+  ["pasar","el banco"],["tomar","el autobús"],["vender","tu bicicleta"],["vivir","feliz"]
+];
+const cmdForm = inf => inf.endsWith("ir") ? inf.slice(0,-2)+"e" : inf.slice(0,-1);
+function commandQ(type){
+  const pool = type ? CMD_VERBS.filter(([v])=>v.slice(-2)===type) : CMD_VERBS;
+  const [inf, rest] = pick(pool), answer = cmdForm(inf), t = inf.slice(-2);
+  const rule = t==="ir" ? `For -ir verbs, change -ir to -e: ${esc(inf)} → <b>${esc(answer)}</b>.` : `For -${t} verbs, erase the last r: ${esc(inf)} → <b>${esc(answer)}</b>.`;
+  return {
+    topic:"command", key:t,
+    html:`<div class="prompt">¡<span class="blank"></span> <span class="verb">(${esc(inf)})</span> ${esc(rest)}!</div>
+          <div class="sub">Type the affirmative tú command.</div>
+          <div class="tip">Trick: -ar and -er verbs, erase the r (mirar → mira, beber → bebe). -ir verbs, change -ir to -e (escribir → escribe).</div>`,
+    accents:false,
+    check(raw){
+      const n = normEs(raw).split(" ")[0] || "";
+      if(noAcc(n)===noAcc(answer)) return {ok:true, msg:rule};
+      if(n===inf) return {ok:false, msg:`That’s the infinitive. ${rule}`};
+      if(t==="ir" && n===inf.slice(0,-1)) return {ok:false, msg:`Close! -ir verbs don’t just drop the r. ${rule}`};
+      return {ok:false, msg:rule};
+    },
+    similar(){ return commandQ(t); }
+  };
+}
+
+// ---------------- 3. places ----------------
+const PLACES = [
+  {es:"la panadería", en:"bakery", acc:["bakery","bread shop","bread store","bread bakery"], ic:"🥖", note:"Pan = bread, so la panadería is the bakery."},
+  {es:"la pastelería", en:"pastry shop", acc:["pastry shop","pastry store","cake shop","cake store","pastry bakery","patisserie","pastries shop","bakery for pastries"], ic:"🎂", note:"Pastel = cake / pastry. (The bread bakery is la panadería.)"},
+  {es:"la zapatería", en:"shoe store", acc:["shoe store","shoe shop","shoestore","shoes store","shoes shop"], ic:"👟", note:"Zapato = shoe."},
+  {es:"la librería", en:"bookstore", acc:["bookstore","book store","bookshop","book shop"], ic:"📚", trap:"lib", note:"Trap! Librería looks like “library,” but it’s the bookstore, where you buy books. The library is la biblioteca."},
+  {es:"la farmacia", en:"pharmacy", acc:["pharmacy","drugstore","drug store"], ic:"💊", note:""},
+  {es:"el supermercado", en:"supermarket", acc:["supermarket","super market","grocery store","grocery"], ic:"🛒", note:""},
+  {es:"el banco", en:"bank", acc:["bank"], ic:"🏦", note:""},
+  {es:"el correo", en:"post office", acc:["post office","postoffice","mail office","mail"], ic:"✉️", note:"Correo = mail, so el correo is the post office."},
+  {es:"la biblioteca", en:"library", acc:["library"], ic:"🏛️", trap:"lib", note:"Trap! La biblioteca is the library, where you borrow books. La librería is the bookstore."},
+  {es:"la estación de servicio", en:"gas station", acc:["gas station","service station","petrol station","filling station"], ic:"⛽", note:"La estación de servicio is the gas station."},
+  {es:"el parque", en:"park", acc:["park"], ic:"🌳", note:""},
+  {es:"la escuela", en:"school", acc:["school"], ic:"🏫", note:""}
+];
+const P = es => PLACES.find(p=>p.es===es);
+function placeQ(only){
+  const pl = only || pick(PLACES);
+  return {
+    topic:"place", key:pl.trap||"",
+    html:`<div class="prompt">${esc(pl.es)}</div><div class="sub">What does this place mean in English?</div>`,
+    accents:false,
+    check(raw){
+      const n = stripArticle(normEn(raw));
+      if(pl.acc.some(a=>n===" "+a+" ")) return {ok:true, msg:`<b>${esc(pl.es)}</b> = ${esc(pl.en)}. ${pl.note}`};
+      return {ok:false, msg:`<b>${esc(pl.es)}</b> means <b>${esc(pl.en)}</b>. ${pl.note}`};
+    },
+    similar(){
+      if(pl.trap) return Math.random()<.5 ? placeQ(P(pl.es==="la librería"?"la biblioteca":"la librería")) : trapSpanishQ(pl.es==="la librería"?"library":"bookstore");
+      return placeQ(pick(PLACES.filter(p=>p!==pl)));
+    }
+  };
+}
+function trapSpanishQ(word){
+  const w = word || pick(["library","bookstore"]);
+  const ans = w==="library" ? "biblioteca" : "librería";
+  const why = "Librería = bookstore (buy books). Biblioteca = library (borrow books).";
+  return {
+    topic:"place", key:"lib",
+    html:`<div class="prompt">Type the Spanish word for <b>${w.toUpperCase()}</b>.</div><div class="sub">Careful, this one’s a trap!</div>`,
+    accents:true,
+    check(raw){
+      const n = normEs(raw).replace(/^(la|el) /,"");
+      if(noAcc(n)===noAcc(ans)) return {ok:true, msg:`${why}${n!==ans?" (Tip: librería has an accent on the í.)":""}`};
+      return {ok:false, msg:`The answer is <b>la ${ans}</b>. ${why}`};
+    },
+    similar(){ return placeQ(P(w==="library"?"la librería":"la biblioteca")); }
+  };
+}
+
+// ---------------- 4. directions ----------------
+const DIR_TRAP_O = "Trap! <b>Derecho</b> (with an o) means <b>straight</b>. <b>Derecha</b> (with an a) means <b>right</b>.";
+const DIRS = [
+  {es:"dobla", en:"turn", must:[["turn"]], g:"turn"},
+  {es:"sigue derecho", en:"go straight", must:[["straight","ahead"]], not:["right"], trap:"o", g:"straight"},
+  {es:"camina", en:"walk", must:[["walk"]], g:"walk"},
+  {es:"para", en:"stop", must:[["stop"]], g:"stop", note:"Here para is a command that means stop, not “for.”"},
+  {es:"pasa", en:"pass / go past", must:[["pass","past","go by","pass by"]], g:"pass"},
+  {es:"a la derecha", en:"to the right", must:[["right"]], not:["left","straight"], trap:"a", g:"right"},
+  {es:"a la izquierda", en:"to the left", must:[["left"]], not:["right","straight"], g:"left"},
+  {es:"al lado de", en:"next to", must:[["next to","beside","by","next"]], g:"next"},
+  {es:"dobla a la derecha", en:"turn right", must:[["turn"],["right"]], not:["left","straight"], trap:"a", g:"right"},
+  {es:"dobla a la izquierda", en:"turn left", must:[["turn"],["left"]], not:["right"], g:"left"},
+  {es:"camina derecho", en:"walk straight", must:[["walk"],["straight","ahead"]], not:["right"], trap:"o", g:"straight"},
+  {es:"sigue derecho y para", en:"go straight and stop", must:[["straight","ahead"],["stop"]], not:["right"], trap:"o", g:"straight"},
+  {es:"para al lado del banco", en:"stop next to the bank", must:[["stop"],["next to","beside","by"],["bank"]], g:"next"},
+  {es:"pasa la farmacia y dobla a la izquierda", en:"pass the pharmacy and turn left", must:[["pass","past","go by"],["pharmacy","drugstore","drug store"],["turn"],["left"]], not:["right"], g:"pass"},
+  {es:"la escuela está a la derecha", en:"the school is on the right", must:[["school"],["right"]], not:["left","straight"], trap:"a", g:"right"},
+  {es:"camina y dobla a la derecha", en:"walk and turn right", must:[["walk"],["turn"],["right"]], not:["left","straight"], trap:"a", g:"right"},
+  {es:"el parque está al lado de la biblioteca", en:"the park is next to the library", must:[["park"],["next to","beside","by"],["library"]], not:["bookstore"], g:"next"}
+];
+function dirQ(group){
+  const pool = group ? DIRS.filter(d=>d.g===group) : DIRS;
+  const d = pick(pool);
+  return {
+    topic:"dir", key:d.g,
+    html:`<div class="prompt">${esc(cap(d.es))}</div><div class="sub">Type it in English.</div>`,
+    accents:false,
+    check(raw){
+      const n = normEn(raw);
+      const right = `“${esc(d.es)}” means <b>${esc(d.en)}</b>.`;
+      const ok = d.must.every(alts=>alts.some(a=>has(n,a))) && !(d.not||[]).some(w=>has(n,w));
+      if(ok) return {ok:true, msg:right + (d.trap==="o" ? " Nice, you didn’t fall for derecho!" : "")};
+      if(d.trap==="o" && has(n,"right")) return {ok:false, msg:`${DIR_TRAP_O} ${right}`};
+      if(d.trap==="a" && has(n,"straight")) return {ok:false, msg:`Trap! <b>Derecha</b> means <b>right</b>. <b>Derecho</b> means straight. ${right}`};
+      if((has(n,"left") && d.must.some(a=>a.includes("right"))) || (has(n,"right") && d.must.some(a=>a.includes("left"))))
+        return {ok:false, msg:`Izquierda = <b>left</b>, derecha = <b>right</b>. ${right}`};
+      return {ok:false, msg:`${right} ${d.note||""}`};
+    },
+    similar(){ const others = DIRS.filter(x=>x.g===d.g && x!==d); return others.length ? dirQ(d.g) : (Math.random()<.5 ? dirQ() : trapDirQ()); }
+  };
+}
+function trapDirQ(which){
+  const w = which || pick(["straight","right"]);
+  const ans = w==="straight" ? ["derecho","sigue derecho"] : ["a la derecha","derecha"];
+  return {
+    topic:"dir", key:w,
+    html:`<div class="prompt">Type the Spanish for <b>${w==="straight"?"STRAIGHT (as in “go straight”)":"TO THE RIGHT"}</b>.</div><div class="sub">Careful, this one’s a trap!</div>`,
+    accents:false,
+    check(raw){
+      const n = normEs(raw);
+      if(ans.includes(n)) return {ok:true, msg:"Derecho = straight. Derecha = right."};
+      return {ok:false, msg:`The answer is <b>${ans[0]}</b>. Derecho (o) = straight. Derecha (a) = right.`};
+    },
+    similar(){ return trapDirQ(w==="straight"?"right":"straight"); }
+  };
+}
+
+// ---------------- 5. map challenge ----------------
+// Layout: you start at the bottom of Main Street facing up. One cross street in the middle.
+const SLOTS = {
+  WN:{x:10,y:20,w:95,h:150},  ML2:{x:115,y:20,w:90,h:150},  MR2:{x:275,y:20,w:90,h:150},  EN:{x:375,y:20,w:95,h:150},
+  WS:{x:10,y:245,w:95,h:150}, ML1:{x:115,y:245,w:90,h:150}, MR1:{x:275,y:245,w:90,h:150}, ES:{x:375,y:245,w:95,h:150}
+};
+const de = es => es.startsWith("el ") ? "del "+es.slice(3) : "de "+es;
+const enName = es => "the " + P(es).en;
+function wrapLabel(s){ const words=s.split(" "), lines=[]; let cur=""; words.forEach(w=>{ if((cur+" "+w).trim().length>12 && cur){ lines.push(cur); cur=w; } else cur=(cur+" "+w).trim(); }); if(cur) lines.push(cur); return lines; }
+function mapQ(){
+  const names = shuffle(PLACES.map(p=>p.es)).slice(0,8);
+  const at = {}; Object.keys(SLOTS).forEach((k,i)=>at[k]=names[i]);
+  const type = pick(["straight","stop","turn","turnNext"]);
+  let es, en, target, path;
+  const start=[240,412], mid=[240,210];
+  if(type==="straight"){
+    const L = Math.random()<.5;
+    const passed = at[L?"ML1":"MR1"]; target = L?"ML2":"MR2";
+    es = `Sigue derecho y pasa ${passed}. Para. ¿Qué lugar está ${L?"a la izquierda":"a la derecha"}?`;
+    en = `Go straight and pass ${enName(passed)}. Stop. Which place is on the ${L?"left":"right"}?`;
+    path = [start, [240,95]];
+  } else if(type==="stop"){
+    const L = Math.random()<.5;
+    const nextTo = at[L?"WS":"ES"]; target = L?"ML1":"MR1";
+    es = `Camina derecho y para. ¿Qué lugar está ${L?"a la izquierda":"a la derecha"}, al lado ${de(nextTo)}?`;
+    en = `Walk straight and stop. Which place is on the ${L?"left":"right"}, next to ${enName(nextTo)}?`;
+    path = [start, [240,320]];
+  } else {
+    const turnR = Math.random()<.5, sideL = Math.random()<.5;
+    // walking east after a right turn: left = north side. Walking west after a left turn: left = south side.
+    let passedK, targetK;
+    if(turnR){ passedK = sideL ? "MR2" : "MR1"; targetK = sideL ? "EN" : "ES"; }
+    else     { passedK = sideL ? "ML1" : "ML2"; targetK = sideL ? "WS" : "WN"; }
+    const passed = at[passedK]; target = targetK;
+    const dobla = turnR ? "Dobla a la derecha" : "Dobla a la izquierda";
+    const side = sideL ? "a la izquierda" : "a la derecha";
+    if(type==="turn"){
+      es = `Sigue derecho. ${dobla}. Pasa ${passed}. Para. ¿Qué lugar está ${side}?`;
+      en = `Go straight. Turn ${turnR?"right":"left"}. Pass ${enName(passed)}. Stop. Which place is on the ${sideL?"left":"right"}?`;
+    } else {
+      es = `Camina derecho y ${dobla.toLowerCase()}. Para. ¿Qué lugar está ${side}, al lado ${de(passed)}?`;
+      en = `Walk straight and turn ${turnR?"right":"left"}. Stop. Which place is on the ${sideL?"left":"right"}, next to ${enName(passed)}?`;
+    }
+    path = [start, mid, [turnR?440:40, 210]];
+  }
+  const answer = at[target];
+  return {topic:"map", key:type, map:true, at, es, en, target, answer, path,
+    similar(){ return mapQ(); }};
+}
+function renderMap(q){
+  if(q.big) return renderBigMap(q);
+  const blds = Object.entries(SLOTS).map(([k,r])=>{
+    const name=q.at[k], lines=wrapLabel(name), cx=r.x+r.w/2;
+    const t = lines.map((l,i)=>`<text x="${cx}" y="${r.y+r.h/2+16+i*16}" text-anchor="middle">${esc(l)}</text>`).join("");
+    return `<g class="bld" data-k="${k}" role="button" tabindex="0" aria-label="${esc(name)}">
+      <rect x="${r.x}" y="${r.y}" width="${r.w}" height="${r.h}" rx="12"/>
+      <text class="ic" x="${cx}" y="${r.y+r.h/2-8}" text-anchor="middle">${P(name).ic}</text>${t}</g>`;
+  }).join("");
+  return `<div class="dirs" lang="es">${esc(q.es)}</div>
+    <div class="sub">You start at the ⭐ at the bottom, facing up the street. Tap the place you end up at.</div>
+    <div class="map" id="v_mapBox"><svg viewBox="0 0 480 430" role="group" aria-label="Town map">
+      <rect class="street" x="215" y="0" width="50" height="430"/>
+      <rect class="street" x="0" y="185" width="480" height="50"/>
+      <line class="dash" x1="240" y1="0" x2="240" y2="185"/><line class="dash" x1="240" y1="235" x2="240" y2="430"/>
+      <line class="dash" x1="0" y1="210" x2="215" y2="210"/><line class="dash" x1="265" y1="210" x2="480" y2="210"/>
+      ${blds}
+      <polyline class="route hidden" id="v_route" points="${q.path.map(p=>p.join(",")).join(" ")}"/>
+      <polygon class="you" points="240,398 245,410 258,410 248,418 252,430 240,423 228,430 232,418 222,410 235,410"/>
+    </svg></div>`;
+}
+
+// ---------------- city maps (Hard / Expert / Impossible) ----------------
+// N streets each way; nodes are corners (c,r) 0..N-1, and -1 / N are the map edges.
+const MAP_GAP=180, MAP_PAD=120;
+const STEP = {N:[0,-1],E:[1,0],S:[0,1],W:[-1,0]}, TURN_L = {N:"W",W:"S",S:"E",E:"N"}, TURN_R = {N:"E",E:"S",S:"W",W:"N"};
+const nextNode = (n,h) => [n[0]+STEP[h][0], n[1]+STEP[h][1]];
+function segBlocks(a,b){ // blocks beside one street segment, by compass side
+  if(a[0]===b[0]){ const c=a[0], r=Math.max(a[1],b[1]); return {W:`${c},${r}`, E:`${c+1},${r}`}; }
+  const r=a[1], c=Math.max(a[0],b[0]); return {N:`${c},${r}`, S:`${c},${r+1}`};
+}
+const sideOf = (h,left) => left ? TURN_L[h] : TURN_R[h];
+function bigMapQ(turns, N=3, level="Hard"){
+  const W = MAP_PAD*2 + MAP_GAP*(N-1);
+  const XY = c => c<0 ? 0 : c>N-1 ? W : MAP_PAD+MAP_GAP*c;
+  const isC = n => n[0]>=0 && n[0]<N && n[1]>=0 && n[1]<N;
+  for(let attempt=0; attempt<600; attempt++){
+    const c0=Math.floor(Math.random()*N); let node=[c0,N], h="N";
+    const pts=[[XY(c0),W]], legs=[], landmarks=[]; let ok=true;
+    for(let t=0;t<turns;t++){
+      const opts=[]; let n=node, L=0;
+      while(true){ const nn=nextNode(n,h); if(!isC(nn)) break; L++; opts.push({L, end:nn, last:[n,nn]}); n=nn; }
+      if(!opts.length){ ok=false; break; }
+      const o=pick(opts), left=Math.random()<.5;
+      const lm=segBlocks(o.last[0],o.last[1])[sideOf(h,left)];
+      let m=node; for(let k=0;k<o.L;k++){ m=nextNode(m,h); pts.push([XY(m[0]),XY(m[1])]); }
+      // turn a way that still has a corner ahead
+      const rOk=isC(nextNode(o.end,TURN_R[h])), lOk=isC(nextNode(o.end,TURN_L[h]));
+      let turnR=Math.random()<.5; if(turnR && !rOk) turnR=false; else if(!turnR && !lOk) turnR=true;
+      legs.push({L:o.L, lm, turnR}); landmarks.push(lm);
+      node=o.end; h = turnR ? TURN_R[h] : TURN_L[h];
+    }
+    if(!ok) continue;
+    const s1=[node, nextNode(node,h)];
+    const finalL = (isC(s1[1]) && Math.random()<.6) ? 2 : 1;
+    let passLm=null, seg=s1;
+    if(finalL===2){ passLm=segBlocks(...s1)[sideOf(h,Math.random()<.5)]; seg=[s1[1], nextNode(s1[1],h)]; pts.push([XY(s1[1][0]),XY(s1[1][1])]); }
+    const sideL=Math.random()<.5, target=segBlocks(...seg)[sideOf(h,sideL)];
+    if(landmarks.includes(target) || target===passLm) continue;
+    const needed=[...new Set([...landmarks, passLm, target].filter(Boolean))];
+    if(needed.length>PLACES.length) continue;
+    pts.push([(XY(seg[0][0])+XY(seg[1][0]))/2, (XY(seg[0][1])+XY(seg[1][1]))/2]);
+    const keys=[]; for(let bc=0;bc<=N;bc++) for(let br=0;br<=N;br++) keys.push(`${bc},${br}`);
+    const names=shuffle(PLACES.map(p=>p.es)), blocks={};
+    needed.forEach((k,i)=>blocks[k]=names[i]);
+    const rest=names.slice(needed.length), others=shuffle(keys.filter(k=>!needed.includes(k)));
+    others.forEach((k,i)=>blocks[k]= i<rest.length ? rest[i] : null);
+    const es=[], en=[];
+    legs.forEach((g,i)=>{
+      const nm=blocks[g.lm];
+      if(i===0 && g.L===1){ es.push(`Camina y pasa ${nm}.`); en.push(`Walk and pass ${enName(nm)}.`); }
+      else if(g.L>1){ es.push(`Sigue derecho y pasa ${nm}.`); en.push(`Go straight and pass ${enName(nm)}.`); }
+      else { es.push(`Pasa ${nm}.`); en.push(`Pass ${enName(nm)}.`); }
+      es.push(`Dobla a la ${g.turnR?"derecha":"izquierda"}.`); en.push(`Turn ${g.turnR?"right":"left"}.`);
+    });
+    if(passLm){ es.push(`Pasa ${blocks[passLm]}.`); en.push(`Pass ${enName(blocks[passLm])}.`); }
+    es.push(`Para. ¿Qué lugar está a la ${sideL?"izquierda":"derecha"}?`); en.push(`Stop. Which place is on the ${sideL?"left":"right"}?`);
+    return {topic:"map", key:level+turns, map:true, big:true, N, W, level, blocks, target, answer:blocks[target], path:pts, sx:XY(c0),
+      es:es.join(" "), en:en.join(" "), similar(){ return bigMapQ(turns,N,level); }};
+  }
+  return mapQ();
+}
+function starPts(cx,cy,r){ const p=[]; for(let i=0;i<10;i++){ const a=-Math.PI/2+i*Math.PI/5, rr=i%2?r*0.45:r; p.push(`${(cx+rr*Math.cos(a)).toFixed(1)},${(cy+rr*Math.sin(a)).toFixed(1)}`); } return p.join(" "); }
+function renderBigMap(q){
+  const N=q.N, W=q.W, X=i=>MAP_PAD+MAP_GAP*i, span=[];
+  for(let b=0;b<=N;b++) span.push([b===0?0:X(b-1)+18, b===N?W:X(b)-18]);
+  let streets="";
+  for(let i=0;i<N;i++){ const v=X(i); streets+=`<rect class="street" x="${v-18}" y="0" width="36" height="${W}"/><rect class="street" x="0" y="${v-18}" width="${W}" height="36"/>`; }
+  let blds="";
+  for(let bc=0;bc<=N;bc++) for(let br=0;br<=N;br++){
+    const k=`${bc},${br}`, x=span[bc][0]+6, y=span[br][0]+6, w=span[bc][1]-span[bc][0]-12, h=span[br][1]-span[br][0]-12, cx=x+w/2;
+    const name=q.blocks[k];
+    if(!name){ blds+=`<g class="decor"><rect x="${x}" y="${y}" width="${w}" height="${h}" rx="10"/><text x="${cx}" y="${y+h/2+8}" text-anchor="middle">🏠</text></g>`; continue; }
+    const lines=wrapLabel(name), top=y+h/2-((lines.length)*7);
+    blds+=`<g class="bld" data-k="${k}" role="button" tabindex="0" aria-label="${esc(name)}">
+      <rect x="${x}" y="${y}" width="${w}" height="${h}" rx="10"/>
+      <text class="ic" x="${cx}" y="${top}" text-anchor="middle">${P(name).ic}</text>
+      ${lines.map((l,i)=>`<text x="${cx}" y="${top+20+i*14}" text-anchor="middle">${esc(l)}</text>`).join("")}</g>`;
+  }
+  const huge=N>=4;
+  return `<div class="dirs" lang="es">${esc(q.es)}</div>
+    <div class="sub"><b>${esc(q.level)} map.</b> Start at the ⭐ at the bottom, facing up. <b>Pasa</b> = go past that place, then turn at the next corner (or stop on the next block). Tap where you end up.${huge?" Scroll sideways to see the whole city.":""}</div>
+    <div class="map big${huge?" huge":""}" id="v_mapBox"><svg viewBox="0 0 ${W} ${W}" role="group" aria-label="City map"${huge?` style="min-width:${Math.round(W*0.85)}px"`:""}>
+      ${streets}${blds}
+      <polyline class="route hidden" id="v_route" points="${q.path.map(p=>p.join(",")).join(" ")}"/>
+      <polygon class="you" points="${starPts(q.sx,W-16,14)}"/>
+    </svg></div>`;
+}
+
+// ---------------- game ----------------
+const TOPIC_INFO = {
+  future:{label:"Future tense", cls:"b-future", color:"var(--fut)"},
+  command:{label:"Tú command", cls:"b-command", color:"var(--cmd)"},
+  place:{label:"Places", cls:"b-place", color:"var(--plc)"},
+  dir:{label:"Directions", cls:"b-dir", color:"var(--dir)"},
+  map:{label:"Map challenge", cls:"b-map", color:"var(--map)"}
+};
+let G=null;
+function buildRound(mapOnly){
+  if(mapOnly==="big" || mapOnly==="hard") return [2,2,2,3,3].map(t=>()=>bigMapQ(t,3,"Hard"));
+  if(mapOnly==="expert") return [3,3,4,4,4].map(t=>()=>bigMapQ(t,4,"Expert"));
+  if(mapOnly==="impossible") return [6,6,7,7,8].map(t=>()=>bigMapQ(t,5,"Impossible"));
+  if(mapOnly) return Array.from({length:6},()=>mapQ);
+  const makers = [futureQ,futureQ,futureQ, commandQ,commandQ,commandQ, placeQ,placeQ,()=>trapSpanishQ(), dirQ,dirQ,()=>trapDirQ(), mapQ,()=>bigMapQ(2), pick([futureQ,commandQ,placeQ,dirQ])];
+  return shuffle(makers);
+}
+function startRound(mapOnly){
+  G={queue:buildRound(mapOnly).map(f=>({make:f})), i:0, pts:0, right:0, total:0, streak:0, byTopic:{}, mapOnly, misses:0};
+  $("v_sStart").classList.add("hidden"); $("v_sEnd").classList.add("hidden"); $("v_sGame").classList.remove("hidden");
+  nextQ();
+}
+function updateScore(){ $("v_scPts").textContent=G.pts.toLocaleString(); $("v_scRight").textContent=G.right; $("v_scTotal").textContent=G.total; $("v_scStreak").textContent=G.streak; }
+function nextQ(){
+  if(G.i>=G.queue.length){ endRound(); return; }
+  const item=G.queue[G.i++];
+  const q = item.q || item.make();
+  G.q=q; G.done=false; G.isSimilar=!!item.similar;
+  const info=TOPIC_INFO[q.topic];
+  const base = G.queue.filter(x=>!x.similar).length, num = G.queue.slice(0,G.i).filter(x=>!x.similar).length;
+  $("v_qNum").textContent = `Question ${num} of ${base}`;
+  $("v_qBadge").textContent=info.label; $("v_qBadge").className="badge "+info.cls;
+  $("v_qSimilar").classList.toggle("hidden", !G.isSimilar);
+  $("v_fb").classList.add("hidden"); $("v_nextRow").classList.add("hidden");
+  if(q.map){
+    $("v_qBody").innerHTML=renderMap(q);
+    $("v_qInputArea").classList.add("hidden");
+    $("v_mapBox").querySelectorAll(".bld").forEach(g=>{
+      const go=()=>answerMap(g.dataset.k);
+      g.addEventListener("click",go);
+      g.addEventListener("keydown",e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); e.stopPropagation(); go(); } });
+    });
+  } else {
+    $("v_qBody").innerHTML=q.html;
+    $("v_qInputArea").classList.remove("hidden");
+    $("v_accents").classList.toggle("hidden", !q.accents);
+    const a=$("v_ans"); a.value=""; a.className=""; a.disabled=false; $("v_checkBtn").disabled=false;
+    a.setAttribute("lang", q.topic==="place"||q.topic==="dir" ? "en" : "es");
+    a.focus({preventScroll:true});
+  }
+  updateScore();
+  window.scrollTo({top:0});
+}
+function record(ok){
+  const q=G.q, t=G.byTopic[q.topic] || (G.byTopic[q.topic]={right:0,total:0});
+  t.total++; G.total++;
+  if(ok){ t.right++; G.right++; G.streak++; G.pts += 100 + (G.streak>=3 ? 50 : 0); G.misses=0; }
+  else { G.streak=0; G.misses++; }
+  updateScore();
+}
+function showFeedback(kind, title, html){
+  const fb=$("v_fb"); fb.className="feedback "+kind; fb.innerHTML=`<div class="v">${title}</div><p>${html}</p>`;
+  $("v_nextRow").classList.remove("hidden");
+  const wrong = kind!=="ok";
+  const nb=$("v_nextBtn"), label = wrong && G.misses<=2 ? "Try a similar one" : "Next question";
+  nb.textContent=label; clearInterval(G.lockT); nb.disabled=false;
+  if(wrong){
+    let n=3; nb.disabled=true; nb.textContent=`${label} (${n})`;
+    G.lockT=setInterval(()=>{ n--; if(n<=0){ clearInterval(G.lockT); nb.disabled=false; nb.textContent=label; nb.focus({preventScroll:true}); } else nb.textContent=`${label} (${n})`; },1000);
+  } else setTimeout(()=>nb.focus({preventScroll:true}), 50);
+  try{ fb.scrollIntoView({behavior:"smooth",block:"nearest"}); }catch(e){}
+}
+function queueSimilar(){
+  // after a miss, the next question is a similar one (at most 2 in a row so you never get stuck)
+  if(G.misses>=1 && G.misses<=2) G.queue.splice(G.i,0,{q:G.q.similar(), similar:true});
+}
+function checkTyped(){
+  if(G.done) return;
+  const raw=$("v_ans").value; if(!raw.trim()){ $("v_ans").focus(); return; }
+  G.done=true;
+  const r=G.q.check(raw);
+  $("v_ans").disabled=true; $("v_checkBtn").disabled=true;
+  $("v_ans").className = r.ok ? "ok" : "no";
+  record(r.ok);
+  if(r.ok) showFeedback("ok", G.streak>=3?`¡Correcto! 🔥 ${G.streak} in a row`:"¡Correcto!", r.msg);
+  else { showFeedback(r.close?"close":"no", r.close?"So close!":"Not quite", r.msg); queueSimilar(); }
+}
+function answerMap(k){
+  if(G.done) return;
+  G.done=true;
+  const q=G.q, ok = k===q.target, box=$("v_mapBox");
+  box.classList.add("locked");
+  box.querySelector(`.bld[data-k="${q.target}"]`).classList.add("right");
+  if(!ok) box.querySelector(`.bld[data-k="${k}"]`).classList.add("wrong");
+  $("v_route").classList.remove("hidden");
+  record(ok);
+  const trans = `In English: “${esc(q.en)}”`;
+  if(ok) showFeedback("ok", "¡Correcto! You found it.", `${trans} The answer is <b>${esc(q.answer)}</b>.`);
+  else { showFeedback("no", "Not quite", `${trans} Follow the dotted path: the answer is <b>${esc(q.answer)}</b>. ${q.big ? "Tip: left and right depend on which way you’re walking. Picture yourself walking the dotted path." : "Remember: going up, <b>izquierda</b> is the left side of the street and <b>derecha</b> is the right side."}`); queueSimilar(); }
+}
+function endRound(){
+  $("v_sGame").classList.add("hidden"); $("v_sEnd").classList.remove("hidden");
+  $("v_eScore").textContent = G.pts.toLocaleString()+" pts";
+  const acc = G.total ? Math.round(G.right/G.total*100) : 0;
+  $("v_eLine").textContent = `${G.right} of ${G.total} correct (${acc}%). ${acc>=90?"¡Excelente! You’re ready.":acc>=70?"¡Muy bien! Practice the red topics once more.":"Keep practicing. You’ve got this!"}`;
+  $("v_eTopics").innerHTML = Object.keys(TOPIC_INFO).filter(t=>G.byTopic[t]).map(t=>{
+    const d=G.byTopic[t], p=Math.round(d.right/d.total*100), info=TOPIC_INFO[t];
+    return `<div class="topic"><span>${info.label}</span><div class="track"><i style="width:${p}%;background:${p<70?"var(--bad)":info.color}"></i></div><span>${d.right}/${d.total}</span></div>`;
+  }).join("");
+  window.scrollTo({top:0});
+  $("v_againBtn").focus({preventScroll:true});
+}
+
+$("v_startBtn").onclick=()=>startRound(false);
+$("v_mapBtn").onclick=()=>startRound(true);
+$("v_bigMapBtn").onclick=()=>startRound("hard");
+$("v_expertBtn").onclick=()=>startRound("expert");
+$("v_impBtn").onclick=()=>startRound("impossible");
+$("v_againBtn").onclick=()=>startRound(G && G.mapOnly);
+$("v_mapAgainBtn").onclick=()=>startRound(G && G.mapOnly ? G.mapOnly : true);
+$("v_homeBtn").onclick=()=>{ $("v_sEnd").classList.add("hidden"); $("v_sStart").classList.remove("hidden"); };
+$("v_checkBtn").onclick=checkTyped;
+$("v_nextBtn").onclick=nextQ;
+$("v_ans").addEventListener("keydown",e=>{ if(e.key==="Enter"){ e.preventDefault(); e.stopPropagation(); checkTyped(); } });
+document.addEventListener("keydown",e=>{ if(e.key==="Enter" && G && G.done && !$("v_nextBtn").disabled && !document.getElementById("vamosApp").classList.contains("hidden") && !$("v_sGame").classList.contains("hidden") && document.activeElement!==$("v_nextBtn")){ e.preventDefault(); nextQ(); } });
+$("v_accents").addEventListener("click",e=>{
+  const c=e.target.closest("button[data-c]"); if(!c) return;
+  const a=$("v_ans"); if(a.disabled) return;
+  const s=a.selectionStart ?? a.value.length, en=a.selectionEnd ?? a.value.length;
+  a.setRangeText(c.dataset.c, s, en, "end"); a.focus();
+});
+
+window.openVamos=function(){
+  const app=document.getElementById("vamosApp");
+  if(app.classList.contains("hidden")){
+    ["v_sGame","v_sEnd"].forEach(id=>$(id).classList.add("hidden")); $("v_sStart").classList.remove("hidden");
+  }
+  show("__none"); document.getElementById("bar").classList.add("hidden");
+  app.classList.remove("hidden");
+  if(location.hash!=="#vamos") location.hash="vamos";
+  window.scrollTo({top:0});
+};
+window.vamosStart=function(mode){ openVamos(); startRound(mode==="show" ? false : mode==="easy" ? true : mode); };
+$("v_back").onclick=()=>window.closeVamos();
+})();
+
+window.closeVamos=function(){
+  document.getElementById("vamosApp").classList.add("hidden"); show("sStart");
+  if(location.hash==="#vamos") location.hash="";
+};
+// The Quiz Show has its own page: #vamos (works with the phone’s back button too)
+window.addEventListener("hashchange",()=>{
+  if(location.hash==="#vamos") openVamos();
+  else if(!document.getElementById("vamosApp").classList.contains("hidden")) closeVamos();
+});
+if(location.hash==="#vamos") openVamos();
+
+// ================= Website version =================
+// Features that need Claude are hidden here.
+document.querySelectorAll('#playSeg [data-play="host"], #playSeg [data-play="join"]').forEach(b=>b.classList.add("hidden"));
+{ const _re=resetExplain; resetExplain=function(){ _re(); $("explainBtn").classList.add("hidden"); }; }
+
+// ---------- sign in ----------
+let authMode="in";
+const authMsg=m=>{ $("authMsg").textContent=m; };
+[...$("authSeg").children].forEach(b=>{ b.onclick=()=>{
+  authMode=b.dataset.m; segPick($("authSeg"),b);
+  $("authNameWrap").classList.toggle("hidden", authMode!=="up");
+  $("authBtn").textContent = authMode==="up" ? "Create account" : "Sign in";
+  $("authPass").setAttribute("autocomplete", authMode==="up" ? "new-password" : "current-password");
+  authMsg("");
+}; });
+const AUTH_ERR={
+  "auth/invalid-email":"That email doesn’t look right. Check it and try again.",
+  "auth/email-already-in-use":"There’s already an account with that email. Tap “Sign in” instead.",
+  "auth/weak-password":"Pick a longer password (at least 6 characters).",
+  "auth/invalid-credential":"Email or password is wrong. Try again.",
+  "auth/wrong-password":"Email or password is wrong. Try again.",
+  "auth/user-not-found":"No account with that email yet. Tap “Create account.”",
+  "auth/too-many-requests":"Too many tries. Wait a few minutes, then try again.",
+  "auth/network-request-failed":"Couldn’t connect. Check your internet and try again.",
+  "auth/operation-not-allowed":"Sign-in isn’t turned on for this site yet."
+};
+async function doAuth(){
+  const email=$("authEmail").value.trim(), pass=$("authPass").value;
+  if(!email || !pass){ authMsg("Type your email and a password."); return; }
+  $("authBtn").disabled=true; authMsg(authMode==="up" ? "Creating your account…" : "Signing in…");
+  try{
+    if(authMode==="up"){
+      const name=$("authName").value.trim().slice(0,20);
+      if(!name){ authMsg("Type your name first."); $("authName").focus(); return; }
+      const cred=await auth.createUserWithEmailAndPassword(email, pass);
+      await cred.user.updateProfile({displayName:name});
+      if(ME){ ME.name=name; $("whoLine").textContent=`Signed in as ${name}`; }
+    } else {
+      await auth.signInWithEmailAndPassword(email, pass);
+    }
+    $("authPass").value="";
+  }catch(e){ authMsg(AUTH_ERR[e && e.code] || "Something went wrong. Try again."); }
+  finally{ $("authBtn").disabled=false; }
+}
+$("authBtn").onclick=doAuth;
+["authEmail","authPass","authName"].forEach(id=>$(id).addEventListener("keydown",e=>{ if(e.key==="Enter"){ e.preventDefault(); doAuth(); } }));
+$("forgotBtn").onclick=async()=>{
+  const email=$("authEmail").value.trim();
+  if(!email){ authMsg("Type your email above first, then tap “Forgot password?”"); return; }
+  try{ await auth.sendPasswordResetEmail(email); authMsg("If that email can receive mail, a reset link is on its way. If your school blocks outside emails, make a new account instead."); }
+  catch(e){ authMsg(AUTH_ERR[e && e.code] || "Couldn’t send a reset email. Try again."); }
+};
+$("signOutBtn").onclick=()=>{ mpLeave && mpLeave(); auth.signOut(); };
+auth.onAuthStateChanged(u=>{
+  if(u){
+    ME={uid:u.uid, name:(u.displayName || (u.email||"player").split("@")[0]).slice(0,20)};
+    store=fireStore(u.uid); storeWaiters.splice(0).forEach(r=>r());
+    $("whoLine").textContent=`Signed in as ${ME.name}`;
+    $("sAuth").classList.add("hidden");
+    if(document.getElementById("vamosApp").classList.contains("hidden")) show("sStart");
+    loadSets();
+  } else {
+    ME=null; store=null; customSets=[]; publicSets=[]; selectedId="spanish"; making=false;
+    $("builderWrap").classList.add("hidden"); $("bar").classList.add("hidden");
+    show("__none"); document.getElementById("vamosApp").classList.add("hidden");
+    $("sAuth").classList.remove("hidden"); renderLibrary(); renderTopics();
+  }
+});
+{ const _ov=window.openVamos; window.openVamos=function(){ $("sAuth").classList.add("hidden"); _ov(); }; }
+{ const _cv=window.closeVamos; window.closeVamos=function(){ _cv(); if(!ME){ show("__none"); $("sAuth").classList.remove("hidden"); } }; }
+
+// ---------- set builder ----------
+let bMode="list", bDir="fwd";
+const bMsg=m=>{ $("bMsg").textContent=m; };
+{ const _ss=selectSet; selectSet=function(id){ $("builderWrap").classList.add("hidden"); _ss(id); }; }
+function openBuilder(){
+  making=true; renderLibrary();
+  $("customWrap").classList.add("hidden"); $("topicWrap").classList.add("hidden");
+  $("builderWrap").classList.remove("hidden"); updateSetupVis();
+  $("bPubName").textContent = ME ? ME.name : "you"; bMsg(""); $("startMsg").textContent="";
+  if(!$("bRows").children.length){ for(let i=0;i<4;i++) addRow(); }
+  $("bTitle").focus();
+}
+[...$("bModeSeg").children].forEach(b=>{ b.onclick=()=>{
+  bMode=b.dataset.b; segPick($("bModeSeg"),b); bMsg("");
+  $("bList").classList.toggle("hidden", bMode!=="list");
+  $("bType").classList.toggle("hidden", bMode!=="type");
+  $("bClaude").classList.toggle("hidden", bMode!=="claude");
+}; });
+[...$("bDirSeg").children].forEach(b=>{ b.onclick=()=>{ bDir=b.dataset.d; segPick($("bDirSeg"),b); }; });
+function addRow(){
+  const r=document.createElement("div"); r.className="bRow";
+  r.innerHTML=`<input class="q" maxlength="300" placeholder="Question" aria-label="Question">
+    <input class="ok" maxlength="120" placeholder="Right answer" aria-label="Right answer">
+    <input maxlength="120" placeholder="Wrong answer (optional)" aria-label="Wrong answer 1">
+    <input maxlength="120" placeholder="Wrong answer (optional)" aria-label="Wrong answer 2">
+    <input maxlength="120" placeholder="Wrong answer (optional)" aria-label="Wrong answer 3">
+    <button class="del">Remove</button>`;
+  r.querySelector(".del").onclick=()=>r.remove();
+  $("bRows").appendChild(r);
+}
+$("bAddRow").onclick=()=>{ addRow(); $("bRows").lastElementChild.querySelector("input").focus(); };
+function parseList(text){
+  const seen=new Set(), out=[];
+  text.split(/\r?\n/).forEach(line=>{
+    const l=line.trim(); if(!l) return;
+    let parts=null;
+    for(const sep of ["\t"," = ","="," — "," – "," - ",": "]){ const i=l.indexOf(sep); if(i>0){ parts=[l.slice(0,i), l.slice(i+sep.length)]; break; } }
+    if(!parts) return;
+    const w=parts[0].trim().slice(0,120), m=parts[1].trim().slice(0,120);
+    if(!w || !m || seen.has(w.toLowerCase())) return;
+    seen.add(w.toLowerCase()); out.push([w,m]);
+  });
+  return out;
+}
+function pickWrong(ans, pool){
+  const used=new Set([ans.toLowerCase()]), out=[];
+  shuffle(pool).forEach(x=>{ const k=x.toLowerCase(); if(out.length<3 && !used.has(k)){ used.add(k); out.push(x); } });
+  return out;
+}
+function buildFromList(pairs, dir){
+  const qs=[], words=pairs.map(p=>p[0]), means=pairs.map(p=>p[1]);
+  pairs.forEach(([w,m])=>{
+    if(dir!=="back"){ const wr=pickWrong(m,means); if(wr.length===3) qs.push({t:"Word → meaning", q:`What does “${w}” mean?`, a:[m,...wr], why:`“${w}” means “${m}.”`}); }
+    if(dir!=="fwd"){ const wr=pickWrong(w,words); if(wr.length===3) qs.push({t:"Meaning → word", q:`Which word means “${m}”?`, a:[w,...wr], why:`“${m}” is “${w}.”`}); }
+  });
+  return qs;
+}
+function buildFromRows(){
+  const rows=[...$("bRows").children].map(r=>{ const v=[...r.querySelectorAll("input")].map(i=>i.value.trim()); return {q:v[0], a:v[1], w:v.slice(2).filter(Boolean)}; }).filter(r=>r.q && r.a);
+  const allAns=rows.map(r=>r.a), qs=[]; let skipped=0;
+  rows.forEach(r=>{
+    const used=new Set([r.a.toLowerCase()]), wrong=[];
+    r.w.forEach(x=>{ if(wrong.length<3 && !used.has(x.toLowerCase())){ used.add(x.toLowerCase()); wrong.push(x); } });
+    shuffle(allAns).forEach(x=>{ if(wrong.length<3 && !used.has(x.toLowerCase())){ used.add(x.toLowerCase()); wrong.push(x); } });
+    if(wrong.length<3){ skipped++; return; }
+    qs.push({t:"My questions", q:r.q, a:[r.a,...wrong], why:`The answer is “${r.a}.”`});
+  });
+  return {qs, skipped, total:rows.length};
+}
+function claudePrompt(topic){
+  return `Write 20 multiple-choice review questions for a high school student on this topic:
+"""
+${topic}
+"""
+Each question has exactly 4 different options and the FIRST option is the correct one. Keep options short. Add a one-sentence "why" explaining the answer, and a short subtopic name "t" (use 3 to 5 different subtopics). Use correct accents for languages.
+Reply with ONLY this JSON and nothing else:
+{"title":"short name for this set","questions":[{"t":"subtopic","q":"question","a":["correct","wrong","wrong","wrong"],"why":"explanation"}]}`;
+}
+$("bCopy").onclick=async()=>{
+  const topic=$("bTopic").value.trim();
+  if(!topic){ bMsg("Type a topic first."); $("bTopic").focus(); return; }
+  const text=claudePrompt(topic);
+  try{ await navigator.clipboard.writeText(text); bMsg("Copied! Paste it into Claude, then paste Claude’s answer below."); }
+  catch(e){ $("bPaste").value=text; $("bPaste").select(); bMsg("Couldn’t copy automatically. The prompt is in the box below: copy it from there, then replace it with Claude’s answer."); }
+};
+$("bCancel").onclick=()=>{ $("builderWrap").classList.add("hidden"); making=false; renderLibrary(); renderTopics(); };
+$("bSave").onclick=async()=>{
+  let title=$("bTitle").value.trim().slice(0,80), qs=[];
+  if(bMode==="list"){
+    const pairs=parseList($("bListIn").value);
+    if(pairs.length<4){ bMsg("Add at least 4 lines like “la panadería = bakery”."); $("bListIn").focus(); return; }
+    qs=buildFromList(pairs,bDir);
+    if(!qs.length){ bMsg("Your meanings need to be different from each other so there are wrong answers to pick from."); return; }
+  } else if(bMode==="type"){
+    const r=buildFromRows();
+    if(!r.total){ bMsg("Type at least one question and its right answer."); return; }
+    if(!r.qs.length){ bMsg("Each question needs 3 wrong answers. Type some, or add more questions so their answers can be used."); return; }
+    qs=r.qs; if(r.skipped) bMsg(`${r.skipped} question${r.skipped>1?"s":""} skipped because there weren’t enough wrong answers.`);
+  } else {
+    const raw=$("bPaste").value; const a=raw.indexOf("{"), z=raw.lastIndexOf("}");
+    let data=null; try{ data=JSON.parse(raw.slice(a,z+1)); }catch(e){}
+    if(!data){ bMsg("That doesn’t look like Claude’s answer. Copy Claude’s whole reply and paste it again."); return; }
+    qs=cleanSet(data,200);
+    if(!qs.length){ bMsg("No usable questions in that answer. Ask Claude to try again."); return; }
+    if(!title && typeof data.title==="string") title=data.title.trim().slice(0,80);
+  }
+  if(!title){ bMsg("Give your set a name."); $("bTitle").focus(); return; }
+  qs=cleanSet({questions:qs},200);
+  const set={id:"s"+Date.now().toString(36)+Math.random().toString(36).slice(2,6), icon:"✨", title, createdAt:Date.now(), questions:qs, public:$("bPublic").checked, owner:ME?ME.uid:"", ownerName:ME?ME.name:""};
+  $("bSave").disabled=true;
+  try{
+    const st=await getStore(); await withTimeout(st.save(set),15000);
+    customSets.push(set);
+    ["bTitle","bListIn","bTopic","bPaste"].forEach(id=>$(id).value=""); $("bRows").innerHTML=""; $("bPublic").checked=false;
+    selectSet(set.id);
+    libMsg(`Saved “${title}” (${qs.length} questions)${set.public?" and shared it publicly":""}. Press Start game to play.`);
+  }catch(e){ bMsg("Couldn’t save your set. Check your connection and try again."); }
+  finally{ $("bSave").disabled=false; }
+};
+</script>
+</body>
+</html>
