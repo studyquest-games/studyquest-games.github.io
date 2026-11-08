@@ -192,6 +192,16 @@ p{margin:0 0 14px;max-width:60ch}
 .libItem input:focus-visible{outline:none;border-color:var(--violet)}
 .libHead{font-weight:700;color:var(--muted);font-size:14px;letter-spacing:.06em;text-transform:uppercase;margin:12px 0 0}
 .libActs button.pub{color:var(--teal)}
+.pubGrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;margin-top:8px}
+.pubCard{display:flex;flex-direction:column;background:var(--surface);border:3px solid var(--line);border-radius:16px;overflow:hidden;text-align:left;padding:0;box-shadow:0 3px 0 var(--shadow);transition:transform .12s}
+.pubCard:hover{transform:translateY(-2px)}
+.pubCard.sel{border-color:var(--violet)}
+.pcTiles{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:58px 58px;gap:2px;background:var(--line)}
+.pcTiles span{display:flex;align-items:center;justify-content:center;padding:4px 6px;font-size:13px;font-weight:700;color:#2B1B3D;text-align:center;overflow:hidden;line-height:1.15;word-break:break-word}
+.pcBody{display:block;padding:8px 10px 10px}
+.pcBody b{display:block;font-size:16px;line-height:1.2}
+.pcBody small{display:block;color:var(--muted);font-size:13px;font-weight:600;margin-top:2px}
+.pubSearch{display:block;width:100%;margin-top:8px;font-size:17px;font-weight:600}
 .refreshBtn{margin-left:10px;font-size:13px;font-weight:700;color:var(--violet);text-transform:none;letter-spacing:0}
 .bRow{display:grid;grid-template-columns:1fr 1fr;gap:8px;background:var(--bg);border-radius:14px;padding:10px;margin-bottom:8px}
 .bRow input{font:inherit;font-size:16px;color:var(--ink);background:var(--surface);border:2px solid var(--line);border-radius:10px;padding:6px 10px;min-width:0}
@@ -1145,6 +1155,26 @@ function libRow(set, opts){
   }
   return row;
 }
+let pubQuery="";
+const PC_COLORS=["#FFE7A0","#D7E3FF","#C8F1E8","#FFD5DC"];
+function pubCard(set,by){
+  const on = !making && set.id===selectedId;
+  const b=document.createElement("button"); b.className="pubCard"+(on?" sel":""); b.setAttribute("aria-pressed", on?"true":"false");
+  const words=[...new Set(set.questions.map(x=>String(x.a[0])))].slice(0,4); while(words.length<4) words.push("");
+  b.innerHTML=`<span class="pcTiles" aria-hidden="true">${words.map((w,i)=>`<span style="background:${PC_COLORS[i]}">${esc(w.slice(0,36))}</span>`).join("")}</span><span class="pcBody"><b></b><small></small></span>`;
+  b.querySelector("b").textContent=set.title;
+  b.querySelector("small").textContent=`by ${by} · ${set.questions.length} questions`;
+  b.setAttribute("aria-label", `${set.title}, by ${by}, ${set.questions.length} questions`);
+  b.onclick=()=>selectSet(set.id);
+  return b;
+}
+function fillPubGrid(grid,list){
+  const q=pubQuery.trim().toLowerCase();
+  const shown = q ? list.filter(({set,by})=>(set.title+" "+by+" "+[...new Set(set.questions.map(x=>x.t))].join(" ")).toLowerCase().includes(q)) : list;
+  grid.innerHTML="";
+  if(!shown.length){ const p=document.createElement("p"); p.className="muted"; p.style.cssText="font-size:15px;grid-column:1/-1;margin:4px 0"; p.textContent=`No public games match “${pubQuery.trim()}”.`; grid.appendChild(p); return; }
+  shown.forEach(({set,by})=>grid.appendChild(pubCard(set,by)));
+}
 function libHead(t){ const h=document.createElement("p"); h.className="libHead"; h.textContent=t; return h; }
 function renderLibrary(){
   const box=$("libList"); box.innerHTML="";
@@ -1168,7 +1198,16 @@ function renderLibrary(){
     .sort((a,b)=>(b.set.createdAt||0)-(a.set.createdAt||0));
   if(!pubAll.length){ const pe=document.createElement("p"); pe.className="muted"; pe.style.cssText="font-size:15px;margin:4px 0 0";
     pe.textContent="No public games yet. When someone switches one of their sets to 🌍 Public, it shows up here for everyone."; box.appendChild(pe); }
-  pubAll.forEach(({set,by})=>box.appendChild(libRow(set,{sub:`by ${by} · ${set.questions.length} questions`})));
+  else {
+    const grid=document.createElement("div"); grid.className="pubGrid";
+    if(pubAll.length>10){
+      const si=document.createElement("input"); si.type="search"; si.className="textIn pubSearch";
+      si.placeholder=`Search ${pubAll.length} public games by name, creator, or topic`; si.setAttribute("aria-label","Search public games");
+      si.value=pubQuery; si.oninput=()=>{ pubQuery=si.value; fillPubGrid(grid,pubAll); };
+      box.appendChild(si);
+    }
+    box.appendChild(grid); fillPubGrid(grid,pubAll);
+  }
 }
 
 function selectSet(id){
