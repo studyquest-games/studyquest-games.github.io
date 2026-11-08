@@ -192,6 +192,7 @@ p{margin:0 0 14px;max-width:60ch}
 .libItem input:focus-visible{outline:none;border-color:var(--violet)}
 .libHead{font-weight:700;color:var(--muted);font-size:14px;letter-spacing:.06em;text-transform:uppercase;margin:12px 0 0}
 .libActs button.pub{color:var(--teal)}
+.refreshBtn{margin-left:10px;font-size:13px;font-weight:700;color:var(--violet);text-transform:none;letter-spacing:0}
 .bRow{display:grid;grid-template-columns:1fr 1fr;gap:8px;background:var(--bg);border-radius:14px;padding:10px;margin-bottom:8px}
 .bRow input{font:inherit;font-size:16px;color:var(--ink);background:var(--surface);border:2px solid var(--line);border-radius:10px;padding:6px 10px;min-width:0}
 .bRow input.q{grid-column:1/-1}
@@ -370,7 +371,7 @@ textarea:focus-visible{outline:none;border-color:var(--violet)}
   <section class="card hidden" id="sStart">
     <h1>Study Quest</h1>
     <p class="muted" style="font-size:15px;display:flex;gap:10px;align-items:center;flex-wrap:wrap"><span id="whoLine"></span><button class="ghost" id="signOutBtn" style="color:var(--violet);margin:0;padding:2px 8px">Sign out</button></p>
-    <p class="muted">Your library of review games: Spanish, chemistry, and every set you make.</p>
+    <p class="muted">Your library of review games: every set you make, plus public games other people share.</p>
     <p>Answer right to open a mystery box. Boxes hold gold, doubles, spills, or a chance to steal from or swap with the player you pick. Questions you miss come back a few turns later so you can try them again.</p>
 
     <h3>Draw your player</h3>
@@ -1110,7 +1111,7 @@ const BUILTIN=[
   {id:"spanish", icon:"🗺️", title:"Spanish: future, tú commands, places, directions", questions:QUESTIONS, builtin:true},
   {id:"chem", icon:"🧪", title:"Chemistry: reactions, moles, empirical formulas", questions:CHEM_Q, builtin:true}
 ];
-let customSets=[], selectedId="spanish", making=false, canMake=true, vamosMode="show";
+let customSets=[], selectedId=null, making=false, canMake=true, vamosMode="show";
 const selTopics=new Set();
 const libMsg = m => { $("libMsg").textContent = m; };
 const fmtDate = ts => { try{ return new Date(ts).toLocaleDateString(undefined,{month:"short",day:"numeric"}); }catch(e){ return ""; } };
@@ -1147,13 +1148,13 @@ function libRow(set, opts){
 function libHead(t){ const h=document.createElement("p"); h.className="libHead"; h.textContent=t; return h; }
 function renderLibrary(){
   const box=$("libList"); box.innerHTML="";
-  box.appendChild(libHead("Built in"));
+  if(ME && ME.owner){ box.appendChild(libHead("Quiz Show"));
   { const row=document.createElement("div"); row.className="libItem"+(!making && selectedId==="vamos" ? " sel" : "");
     row.innerHTML=`<button class="libPick"><span class="ic">🎤</span><span><b>¡Vamos! Quiz Show</b><small>Spanish · type your answers · map challenge</small></span></button>`;
     row.querySelector("button").setAttribute("aria-pressed", (!making && selectedId==="vamos") ? "true" : "false");
     row.querySelector("button").onclick=()=>selectSet("vamos");
     box.appendChild(row); }
-  BUILTIN.forEach(set=>box.appendChild(libRow(set,{sub:`${set.questions.length} questions · built in`})));
+  }
   box.appendChild(libHead("My sets"));
   const mine=customSets.slice().sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
   mine.forEach(set=>box.appendChild(libRow(set,{mine:true, sub:`${set.questions.length} questions${set.createdAt?" · made "+fmtDate(set.createdAt):""}`})));
@@ -1161,11 +1162,13 @@ function renderLibrary(){
   add.innerHTML=`<button class="libPick"><span class="ic">➕</span><span><b>Make a new set</b><small>From a word list, your own questions, or Claude</small></span></button>`;
   add.querySelector("button").onclick=()=>openBuilder();
   box.appendChild(add);
-  if(publicSets.length){
-    box.appendChild(libHead("Public games"));
-    publicSets.slice().sort((a,b)=>(b.createdAt||0)-(a.createdAt||0))
-      .forEach(set=>box.appendChild(libRow(set,{sub:`by ${set.ownerName} · ${set.questions.length} questions`})));
-  }
+  const pubHead=libHead("Public games"), rf=mkBtn("↻ Refresh","refreshBtn");
+  rf.onclick=()=>loadSets(); pubHead.appendChild(rf); box.appendChild(pubHead);
+  const pubAll=[...publicSets.map(x=>({set:x, by:x.ownerName})), ...customSets.filter(x=>x.public).map(x=>({set:x, by:"you"}))]
+    .sort((a,b)=>(b.set.createdAt||0)-(a.set.createdAt||0));
+  if(!pubAll.length){ const pe=document.createElement("p"); pe.className="muted"; pe.style.cssText="font-size:15px;margin:4px 0 0";
+    pe.textContent="No public games yet. When someone switches one of their sets to 🌍 Public, it shows up here for everyone."; box.appendChild(pe); }
+  pubAll.forEach(({set,by})=>box.appendChild(libRow(set,{sub:`by ${by} · ${set.questions.length} questions`})));
 }
 
 function selectSet(id){
@@ -1234,7 +1237,7 @@ function startRename(row,set){
 
 async function deleteSet(set){
   customSets=customSets.filter(x=>x.id!==set.id);
-  if(selectedId===set.id) selectedId="spanish";
+  if(selectedId===set.id) selectedId=null;
   renderLibrary(); renderTopics();
   try{ const st=await getStore(); await st.remove(set.id); libMsg(`Deleted “${set.title}”.`); }
   catch(e){ customSets.push(set); renderLibrary(); libMsg("Couldn’t delete that set. Try again."); }
@@ -1276,7 +1279,9 @@ async function loadSets(){
     const [mine,pub]=await Promise.all([withTimeout(store.list(),15000), withTimeout(store.listPublic(),15000)]);
     customSets=(mine||[]).map(normSet).filter(x=>x.questions.length);
     publicSets=(pub||[]).map(normSet).filter(x=>x.questions.length && x.owner!==ME.uid);
+    if(!selectedId && customSets.length) selectedId=customSets.slice().sort((a,b)=>(b.createdAt||0)-(a.createdAt||0))[0].id;
     libMsg(""); renderLibrary(); renderTopics();
+    if(ME.owner) seedOwnerSets();
   }catch(e){ libMsg("Couldn’t load sets right now. Check your connection and reload the page."); }
 }
 async function togglePublic(set){
@@ -1929,7 +1934,7 @@ $("startBtn").onclick=()=>{
   const pool=activePool();
   if(!pool){
     if(making){ $("startMsg").textContent="Save your new set first, or tap a set in the library."; return; }
-    $("startMsg").textContent="Pick at least one topic to practice."; return; }
+    $("startMsg").textContent = (currentSet() || selectedId==="vamos") ? "Pick at least one topic to practice." : "Pick a set from your library first, or make a new one."; return; }
   $("startMsg").textContent="";
   if(cfg.play==="host") hostGame(pool); else startGame(pool);
 };
@@ -2459,6 +2464,27 @@ if(location.hash==="#vamos") openVamos();
 document.querySelectorAll('#playSeg [data-play="host"], #playSeg [data-play="join"]').forEach(b=>b.classList.add("hidden"));
 { const _re=resetExplain; resetExplain=function(){ _re(); $("explainBtn").classList.add("hidden"); }; }
 
+// ---------- owner account: keeps the Spanish & Chemistry sets and the Quiz Show ----------
+const OWNER_HASH="495a93e7a67923970da68fd3c7976c222d8fdc031aceea3ad1b9124bdad0c127";
+async function sha256hex(t){ const b=await crypto.subtle.digest("SHA-256", new TextEncoder().encode(t)); return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,"0")).join(""); }
+async function checkOwner(u){
+  try{ ME.owner = (await sha256hex((u.email||"").trim().toLowerCase()))===OWNER_HASH; }catch(e){ ME.owner=false; }
+  if(ME.owner && !selectedId) selectedId="vamos";
+}
+async function seedOwnerSets(){
+  const key="sq-seeded-"+ME.uid;
+  try{ if(localStorage.getItem(key)) return; }catch(e){}
+  const st=await getStore(); let added=0;
+  for(const b of BUILTIN){
+    if(customSets.some(x=>x.title===b.title)) continue;
+    const set={id:"seed-"+b.id+"-"+Date.now().toString(36), icon:b.icon, title:b.title, createdAt:Date.now(), questions:b.questions, public:false};
+    try{ await withTimeout(st.save(set),15000); customSets.push({...set, owner:ME.uid, ownerName:ME.name}); added++; }
+    catch(e){ libMsg("Couldn’t add your Spanish and Chemistry sets. Reload to try again."); return; }
+  }
+  try{ localStorage.setItem(key,"1"); }catch(e){}
+  if(added){ renderLibrary(); renderTopics(); libMsg("Your Spanish and Chemistry sets are in My sets."); }
+}
+
 // ---------- sign in ----------
 let authMode="in";
 const authMsg=m=>{ $("authMsg").textContent=m; };
@@ -2514,9 +2540,9 @@ auth.onAuthStateChanged(u=>{
     $("whoLine").textContent=`Signed in as ${ME.name}`;
     $("sAuth").classList.add("hidden");
     if(document.getElementById("vamosApp").classList.contains("hidden")) show("sStart");
-    loadSets();
+    checkOwner(u).then(()=>loadSets());
   } else {
-    ME=null; store=null; customSets=[]; publicSets=[]; selectedId="spanish"; making=false;
+    ME=null; store=null; customSets=[]; publicSets=[]; selectedId=null; making=false;
     $("builderWrap").classList.add("hidden"); $("bar").classList.add("hidden");
     show("__none"); document.getElementById("vamosApp").classList.add("hidden");
     $("sAuth").classList.remove("hidden"); renderLibrary(); renderTopics();
