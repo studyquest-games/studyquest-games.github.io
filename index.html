@@ -192,6 +192,8 @@ p{margin:0 0 14px;max-width:60ch}
 .libItem input:focus-visible{outline:none;border-color:var(--violet)}
 .libHead{font-weight:700;color:var(--muted);font-size:14px;letter-spacing:.06em;text-transform:uppercase;margin:12px 0 0}
 .libActs button.pub{color:var(--teal)}
+.topicPick{cursor:pointer}
+.topicPick input{width:18px;height:18px;margin:0 6px 0 0;vertical-align:-3px;accent-color:var(--violet)}
 .pubGrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;margin-top:8px}
 .pubCard{display:flex;flex-direction:column;background:var(--surface);border:3px solid var(--line);border-radius:16px;overflow:hidden;text-align:left;padding:0;box-shadow:0 3px 0 var(--shadow);transition:transform .12s}
 .pubCard:hover{transform:translateY(-2px)}
@@ -395,8 +397,8 @@ textarea:focus-visible{outline:none;border-color:var(--violet)}
       </div>
     </div>
 
-    <h3>How do you want to play?</h3>
-    <div class="seg big" id="playSeg">
+    <h3 class="hidden">How do you want to play?</h3>
+    <div class="seg big hidden" id="playSeg">
       <button data-play="solo" aria-pressed="true">Just me<small>Play on this device, with as many bots as you want</small></button>
       <button data-play="host" aria-pressed="false">Host a game<small>Get a code your friends type to join</small></button>
       <button data-play="join" aria-pressed="false">Join with a code<small>Type the code a friend gives you</small></button>
@@ -438,7 +440,7 @@ textarea:focus-visible{outline:none;border-color:var(--violet)}
       <h3><label for="bTitle">Set name</label></h3>
       <input class="textIn" id="bTitle" maxlength="80" placeholder="e.g. Unit 4 vocab" style="width:min(420px,100%)">
       <h3>How do you want to make it?</h3>
-      <div class="seg" id="bModeSeg"><button data-b="list" aria-pressed="true">From a word list</button><button data-b="type" aria-pressed="false">Type my own questions</button><button data-b="claude" aria-pressed="false">Paste from Claude</button></div>
+      <div class="seg" id="bModeSeg"><button data-b="list" aria-pressed="true">From a word list</button><button data-b="type" aria-pressed="false">Type my own questions</button><button data-b="claude" aria-pressed="false">Paste from Claude or ChatGPT</button></div>
       <div id="bList">
         <p class="muted" style="font-size:15px;margin:12px 0 6px">One per line: <b>word = meaning</b>. You can also copy and paste straight from Quizlet. You need at least 4 lines.</p>
         <textarea id="bListIn" rows="8" placeholder="la panadería = bakery&#10;la farmacia = pharmacy&#10;el banco = bank&#10;la biblioteca = library"></textarea>
@@ -455,21 +457,22 @@ textarea:focus-visible{outline:none;border-color:var(--violet)}
         <div class="claudeRow">
           <button class="go" id="bCopy">📋 Copy prompt</button>
           <a class="go" href="https://claude.ai/new" target="_blank" rel="noopener" style="background:var(--teal);box-shadow:0 5px 0 #0A6B60">Open Claude ↗</a>
+          <a class="go" href="https://chatgpt.com/" target="_blank" rel="noopener" style="background:#10A37F;box-shadow:0 5px 0 #0B7A5F">Open ChatGPT ↗</a>
           <button class="ghost" id="bHelpBtn" aria-expanded="false" aria-controls="bHelp">❓ Need help?</button>
         </div>
         <div class="helpBox hidden" id="bHelp">
-          <h3 style="margin-top:0">How to make a set with Claude</h3>
+          <h3 style="margin-top:0">How to make a set with Claude or ChatGPT</h3>
           <ol class="steps">
             <li><b>Type what you want to study</b> in the box above, like “Unit 3 Spanish vocab.”</li>
             <li><b>Press 📋 Copy prompt.</b> It copies this message, with your topic filled in:
               <textarea id="bPrompt" rows="8" readonly aria-label="Prompt to copy into Claude"></textarea></li>
-            <li><b>Press Open Claude ↗.</b> Paste the prompt into Claude’s message box (Ctrl+V, or on a phone tap and hold, then Paste) and send it.</li>
-            <li><b>Copy Claude’s whole answer.</b> It looks like <code>{"title":"Unit 3 Vocab","questions":[ … ]}</code>. Use the copy button under Claude’s answer, or select all of it.</li>
+            <li><b>Press Open Claude ↗ or Open ChatGPT ↗.</b> Paste the prompt into the message box (Ctrl+V, or on a phone tap and hold, then Paste) and send it.</li>
+            <li><b>Copy the whole answer.</b> It looks like <code>{"title":"Unit 3 Vocab","questions":[ … ]}</code>. Use the copy button under the answer, or select all of it.</li>
             <li><b>Paste it in the box below.</b> When you see the green ✓, press <b>Save set</b>.</li>
           </ol>
-          <p class="muted" style="font-size:15px;margin:0">Tip: if Claude asks you a question instead of answering, reply “Just give me the JSON.”</p>
+          <p class="muted" style="font-size:15px;margin:0">Tip: if Claude or ChatGPT asks you a question instead of answering, reply “Just give me the JSON.”</p>
         </div>
-        <h3><label for="bPaste">Paste Claude’s answer here</label></h3>
+        <h3><label for="bPaste">Paste the answer here</label></h3>
         <textarea id="bPaste" rows="6" placeholder='It starts with {"title": and ends with ]}'></textarea>
         <p class="pasteCheck" id="bPasteCheck" role="status"></p>
       </div>
@@ -633,6 +636,7 @@ textarea:focus-visible{outline:none;border-color:var(--violet)}
     <div class="chart" id="eChart"></div>
     <h3>How well you know each topic</h3>
     <div class="topics" id="eTopics"></div>
+    <div id="ePracticeRow" class="hidden"><p class="muted" style="font-size:15px;margin:10px 0 0">Check the topics you want to work on. Your weakest ones are already checked.</p><button class="go" id="ePracticeBtn" style="margin-top:12px">▶ Play just these topics</button><p class="muted" id="ePracticeMsg" role="status" style="margin-top:8px"></p></div>
     <div id="eMissWrap"><h3>Study these</h3><div class="missed" id="eMissed"></div></div>
     <div style="display:flex;flex-wrap:wrap;gap:12px">
       <button class="go" id="missBtn">Replay my missed questions</button>
@@ -1604,8 +1608,9 @@ function endGame(){
   $("eStats").innerHTML=`<div><b>${fmt(S.gold)}</b>gold</div><div><b>${acc}%</b>accuracy</div><div><b>${S.right}/${S.total}</b>correct</div>`;
   const tps=Object.keys(S.topics);
   $("eTopics").innerHTML = tps.length ? tps.map(t=>{ const d=S.topics[t], p=Math.round(d.right/d.total*100);
-    return `<div class="topic${p<70?" weak":""}"><span>${esc(t)}</span><div class="track"><i style="width:${p}%"></i></div><span>${d.right}/${d.total}</span></div>`; }).join("")
+    return `<label class="topic topicPick${p<70?" weak":""}"><span><input type="checkbox" value="${esc(t)}"${p<70?" checked":""}> ${esc(t)}</span><div class="track"><i style="width:${p}%"></i></div><span>${d.right}/${d.total}</span></label>`; }).join("")
     : `<p class="muted">Answer a few questions to see your topic breakdown.</p>`;
+  $("ePracticeRow").classList.toggle("hidden", !tps.length); $("ePracticeMsg").textContent="";
   const missed=[...S.missed.values()];
   lastMissed=missed;
   $("missBtn").classList.toggle("hidden", missed.length===0);
@@ -1990,7 +1995,14 @@ function lockNext(sec){
 }
 $("nextBtn").onclick=()=>{ if($("nextBtn").disabled) return; if(exCtl){ exCtl.abort(); exCtl=null; } ask(); };
 $("againBtn").onclick=()=>{ mpLeave(); $("bar").classList.add("hidden"); show("sStart"); };
-$("againBtn").textContent="New game";
+$("againBtn").textContent="🏠 Home page";
+$("ePracticeBtn").onclick=()=>{
+  const picked=[...document.querySelectorAll("#eTopics input[type=checkbox]:checked")].map(i=>i.value);
+  if(!picked.length){ $("ePracticeMsg").textContent="Check at least one topic first."; return; }
+  const pool=(S && S.pool || []).filter(q=>picked.includes(q.t));
+  if(!pool.length){ $("ePracticeMsg").textContent="No questions found for those topics."; return; }
+  startGame(pool,false);
+};
 
 // ================= ¡Vamos! Quiz Show (typed answers) =================
 (function(){
@@ -2684,7 +2696,7 @@ function checkPaste(){
   const qs = data ? cleanSet(data,200) : [];
   if(qs.length){ el.textContent=`✓ Found ${qs.length} questions${data && data.title ? ` for “${String(data.title).slice(0,60)}”` : ""}. Press Save set.`; el.className="pasteCheck ok";
     if(!$("bTitle").value.trim() && data && typeof data.title==="string") $("bTitle").value=data.title.trim().slice(0,80); }
-  else { el.textContent="That doesn’t look like Claude’s full answer yet. Make sure you copied all of it, from { to the last }."; el.className="pasteCheck no"; }
+  else { el.textContent="That doesn’t look like the full answer yet. Make sure you copied all of it, from { to the last }."; el.className="pasteCheck no"; }
 }
 $("bPaste").addEventListener("input", checkPaste);
 function showHelp(open){
@@ -2709,9 +2721,9 @@ $("bSave").onclick=async()=>{
   } else {
     const raw=$("bPaste").value; const a=raw.indexOf("{"), z=raw.lastIndexOf("}");
     let data=null; try{ data=JSON.parse(raw.slice(a,z+1)); }catch(e){}
-    if(!data){ bMsg("That doesn’t look like Claude’s answer. Copy Claude’s whole reply and paste it again."); return; }
+    if(!data){ bMsg("That doesn’t look like the full answer. Copy the whole reply and paste it again."); return; }
     qs=cleanSet(data,200);
-    if(!qs.length){ bMsg("No usable questions in that answer. Ask Claude to try again."); return; }
+    if(!qs.length){ bMsg("No usable questions in that answer. Ask it to try again."); return; }
     if(!title && typeof data.title==="string") title=data.title.trim().slice(0,80);
   }
   if(!title){ bMsg("Give your set a name."); $("bTitle").focus(); return; }
